@@ -1,0 +1,316 @@
+﻿group,concept_id,concept_name
+Leukocytes [#/volume] in Blood,3010813,Leukocytes [#/volume] in Blood
+Leukocytes [#/volume] in Blood,3000905,Leukocytes [#/volume] in Blood by Automated count
+Leukocytes [#/volume] in Blood,3006696,Leukocytes [#/volume] in Specimen by Automated count
+Erythrocytes [#/volume] in Blood,3026361,Erythrocytes [#/volume] in Blood
+Erythrocytes [#/volume] in Blood,3020416,Erythrocytes [#/volume] in Blood by Automated count
+Hemoglobin [Mass/volume] in Blood,3002173,Hemoglobin [Mass/volume] in Arterial blood
+Hemoglobin [Mass/volume] in Blood,3000963,Hemoglobin [Mass/volume] in Blood
+Hemoglobin [Mass/volume] in Blood,3027484,Hemoglobin [Mass/volume] in Blood by calculation
+Hematocrit [Volume Fraction] of Blood,3023230,Hematocrit [Volume Fraction] of Arterial blood
+Hematocrit [Volume Fraction] of Blood,3009542,Hematocrit [Volume Fraction] of Blood
+Hematocrit [Volume Fraction] of Blood,3023314,Hematocrit [Volume Fraction] of Blood by Automated count
+MCV [Entitic volume],3024731,MCV [Entitic volume]
+MCV [Entitic volume],3023599,MCV [Entitic volume] by Automated count
+MCH [Entitic mass],3012030,MCH [Entitic mass] by Automated count
+Erythrocyte distribution width [Entitic volume],3002888,Erythrocyte distribution width [Entitic volume]
+Erythrocyte distribution width [Entitic volume],3002888,Erythrocyte distribution width [Entitic volume]
+Erythrocyte distribution width [Ratio],3002385,Erythrocyte distribution width [Ratio]
+Erythrocyte distribution width [Ratio],3019897,Erythrocyte distribution width [Ratio] by Automated count
+Erythrocyte distribution width [Ratio],3049383,Erythrocyte distribution width [Ratio] in Cord blood
+Platelets [#/volume] in Blood,3007461,Platelets [#/volume] in Blood
+Platelets [#/volume] in Blood,3024929,Platelets [#/volume] in Blood by Automated count
+Platelets [#/volume] in Blood,3031586,Platelets [#/volume] in Blood by Estimate
+Platelet distribution width [Entitic volume],3002736,Platelet distribution width [Entitic volume] in Blood by Automated count
+Platelet distribution width [Entitic volume],44787095,Platelet distribution width [Entitic volume] in Cord blood by Automated count
+Platelet mean volume [Entitic volume] in Blood,3001123,Platelet mean volume [Entitic volume] in Blood
+Platelet mean volume [Entitic volume] in Blood,3043111,Platelet mean volume [Entitic volume] in Blood by Automated count
+Platelet mean volume [Entitic volume] in Blood,3048739,Platelet mean volume [Entitic volume] in Cord blood
+Platelet mean volume [Entitic volume] in Blood,3024386,Platelet mean volume [Entitic volume] in Blood by Rees-Ecker
+Glucose [Mass/volume] in Blood,3031266,Glucose [Mass/volume] in Arterial blood
+Glucose [Mass/volume] in Blood,3000483,Glucose [Mass/volume] in Blood
+Glucose [Mass/volume] in Blood,3011424,Glucose [Mass/volume] in Blood by Automated test strip
+Glucose [Mass/volume] in Blood,3034962,Glucose [Mass/volume] in Capillary blood by Glucometer
+Glucose [Mass/volume] in Blood,3004501,Glucose [Mass/volume] in Serum or Plasma
+Urea nitrogen [Mass/volume] in Blood,3004295,Urea nitrogen [Mass/volume] in Blood
+Urea nitrogen [Mass/volume] in Blood,3013682,Urea nitrogen [Mass/volume] in Serum or Plasma
+Creatinine [Mass/volume] in Blood,3051825,Creatinine [Mass/volume] in Blood
+Creatinine [Mass/volume] in Blood,3016723,Creatinine [Mass/volume] in Serum or Plasma
+Urea nitrogen [Mass Ratio] in Blood,3004295,Urea nitrogen [Mass/volume] in Blood
+Urea nitrogen [Mass Ratio] in Blood,3013682,Urea nitrogen [Mass/volume] in Serum or Plasma
+Urea nitrogen [Mass Ratio] in Blood,3018311,Urea nitrogen/Creatinine [Mass Ratio] in Serum or Plasma
+Calcium [Mass/volume' in Blood,3006906,Calcium [Mass/volume] in Serum or Plasma
+Sodium [Moles/volume] in Blood,3000285,Sodium [Moles/volume] in Blood
+Sodium [Moles/volume] in Blood,3019550,Sodium [Moles/volume] in Serum or Plasma
+Potassium [Moles/volume] in Blood,3043409,Potassium [Moles/volume] in Arterial blood
+Potassium [Moles/volume] in Blood,3005456,Potassium [Moles/volume] in Blood
+Potassium [Moles/volume] in Blood,3023103,Potassium [Moles/volume] in Serum or Plasma
+Chloride [Moles or Mass/volume] in Blood,3018572,Chloride [Moles/volume] in Blood
+Chloride [Moles or Mass/volume] in Blood,3014576,Chloride [Moles/volume] in Serum or Plasma
+Chloride [Moles or Mass/volume] in Blood,3027114,Cholesterol [Mass/volume] in Serum or Plasma
+"Carbon dioxide, total [Moles/volume] in Blood",3009609,"Carbon dioxide, total [Moles/volume] in Arterial blood"
+"Carbon dioxide, total [Moles/volume] in Blood",3037663,"Carbon dioxide, total [Moles/volume] in Arterial blood by calculation"
+"Carbon dioxide, total [Moles/volume] in Blood",3014094,"Carbon dioxide, total [Moles/volume] in Blood"
+"Carbon dioxide, total [Moles/volume] in Blood",3031147,"Carbon dioxide, total [Moles/volume] in Blood by calculation"
+"Carbon dioxide, total [Moles/volume] in Blood",3009293,"Carbon dioxide, total [Moles/volume] in Capillary blood"
+"Carbon dioxide, total [Moles/volume] in Blood",3038734,"Carbon dioxide, total [Moles/volume] in Capillary blood by calculation"
+"Carbon dioxide, total [Moles/volume] in Blood",3015632,"Carbon dioxide, total [Moles/volume] in Serum or Plasma"
+"Carbon dioxide, total [Moles/volume] in Blood",40761031,"Carbon dioxide, total [Moles/volume] in Serum or Plasma by calculation"
+"Carbon dioxide, total [Moles/volume] in Blood",3010140,"Carbon dioxide, total [Moles/volume] in Venous blood"
+"Carbon dioxide, total [Moles/volume] in Blood",3049133,"Carbon dioxide, total [Moles/volume] in Venous blood by calculation"
+Anion gap in Blood,3021391,Anion gap 3 in Serum or Plasma
+Anion gap in Blood,3039000,Anion gap in Blood
+Anion gap in Blood,3045716,Anion gap in Serum or Plasma
+25-hydroxyvitamin D3 [Mass/volume] in Serum or Plasma,3020149,25-hydroxyvitamin D3 [Mass/volume] in Serum or Plasma
+ABO and Rh group [Type] in Blood,3003694,ABO and Rh group [Type] in Blood
+ABO and Rh group [Type] in Blood,3000437,ABO and Rh group [Type] in Blood from Blood product unit
+Prothrombin time (PT),3034426,Prothrombin time (PT)
+Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma,3006923,Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma
+Adenovirus DNA [Presence] in Specimen by NAA with probe detection,3041623,Adenovirus DNA [Presence] in Specimen by NAA with probe detection
+Albumin [Mass/volume] in Serum or Plasma,3024561,Albumin [Mass/volume] in Serum or Plasma
+Albumin [Mass/volume] in Serum or Plasma,40763913,Albumin [Mass/volume] in Serum or Plasma by Bromocresol purple (BCP) dye binding method
+Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma,3035995,Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma
+Anisocytosis [Presence] in Blood by Light microscopy,3026314,Anisocytosis [Presence] in Blood by Light microscopy
+aPTT in Blood by Coagulation assay,3013466,aPTT in Blood by Coagulation assay
+aPTT in Blood by Coagulation assay,3018677,aPTT in Platelet poor plasma by Coagulation assay
+Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma,3013721,Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma
+Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma,3037081,Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma by With P-5'-P
+Band form neutrophils [#/volume] in Blood,3018199,Band form neutrophils [#/volume] in Blood
+Band form neutrophils [#/volume] in Blood,3008939,Band form neutrophils [#/volume] in Blood by Manual count
+Band form neutrophils/100 leukocytes in Blood,3004809,Band form neutrophils/100 leukocytes in Blood
+Band form neutrophils/100 leukocytes in Blood,3007591,Band form neutrophils/100 leukocytes in Blood by Manual count
+Band form neutrophils/100 leukocytes in Blood,3017161,Band form neutrophils/100 leukocytes in Body fluid
+Base excess in Blood by calculation,3003396,Base excess in Arterial blood by calculation
+Base excess in Blood by calculation,3012501,Base excess in Blood by calculation
+Base excess in Blood by calculation,3002032,Base excess in Venous blood by calculation
+Base excess in Blood by calculation,3021421,Base excess standard in Arterial blood by calculation
+Base excess in Blood by calculation,3026613,Base excess standard in Capillary blood by calculation
+Base excess in Blood by calculation,3027215,Base excess standard in Venous blood by calculation
+Basophils [#/volume] in Blood,3006315,Basophils [#/volume] in Blood
+Basophils [#/volume] in Blood,3013429,Basophils [#/volume] in Blood by Automated count
+Basophils/100 leukocytes in Blood,3022096,Basophils/100 leukocytes in Blood
+Basophils/100 leukocytes in Blood,3013869,Basophils/100 leukocytes in Blood by Automated count
+Bicarbonate [Moles/volume] in Blood,3008152,Bicarbonate [Moles/volume] in Arterial blood
+Bicarbonate [Moles/volume] in Blood,3006576,Bicarbonate [Moles/volume] in Blood
+Bicarbonate [Moles/volume] in Blood,3015235,Bicarbonate [Moles/volume] in Capillary blood
+Bicarbonate [Moles/volume] in Blood,3016293,Bicarbonate [Moles/volume] in Serum or Plasma
+Bicarbonate [Moles/volume] in Blood,3014637,Bicarbonate [Moles/volume] in Specimen
+Bicarbonate [Moles/volume] in Blood,3027273,Bicarbonate [Moles/volume] in Venous blood
+Bilirubin.conjugated [Mass/volume] in Serum or Plasma,3019676,Bilirubin.conjugated [Mass/volume] in Serum or Plasma
+Bilirubin.direct [Mass/volume] in Serum or Plasma,3027597,Bilirubin.direct [Mass/volume] in Serum or Plasma
+Bilirubin.indirect [Mass/volume] in Serum or Plasma,3007359,Bilirubin.indirect [Mass/volume] in Serum or Plasma
+Bilirubin.total [Mass/volume] in Serum or Plasma,3024128,Bilirubin.total [Mass/volume] in Serum or Plasma
+Blasts [#/volume] in Blood,3005105,Blasts [#/volume] in Blood
+Bordetella parapertussis DNA [Presence] in Specimen by NAA with probe detection,3037875,Bordetella parapertussis DNA [Presence] in Specimen by NAA with probe detection
+Bordetella parapertussis DNA [Presence] in Specimen by NAA with probe detection,3012477,Bordetella pertussis DNA [Presence] in Specimen by NAA with probe detection
+C reactive protein [Mass/volume] in Serum or Plasma,3020460,C reactive protein [Mass/volume] in Serum or Plasma
+Calcium.ionized [Moles/volume] in Blood,3027694,Calcium.ionized [Mass/volume] in Serum or Plasma
+Calcium.ionized [Moles/volume] in Blood,3044331,Calcium.ionized [Moles/volume] in Arterial blood
+Calcium.ionized [Moles/volume] in Blood,3021119,Calcium.ionized [Moles/volume] in Blood
+Calcium.ionized [Moles/volume] in Blood,3050068,Calcium.ionized [Moles/volume] in Blood by Ion-selective membrane electrode (ISE)
+Calcium.ionized [Moles/volume] in Blood,3021347,Calcium.ionized [Moles/volume] in Serum or Plasma
+Carbon dioxide [Partial pressure] in Blood,3027946,Carbon dioxide [Partial pressure] in Arterial blood
+Carbon dioxide [Partial pressure] in Blood,3013290,Carbon dioxide [Partial pressure] in Blood
+Carbon dioxide [Partial pressure] in Blood,3023024,Carbon dioxide [Partial pressure] in Capillary blood
+Carbon dioxide [Partial pressure] in Blood,3021447,Carbon dioxide [Partial pressure] in Venous blood
+"Carbon dioxide, total [Moles/volume] in Blood",3009609,"Carbon dioxide, total [Moles/volume] in Arterial blood"
+"Carbon dioxide, total [Moles/volume] in Blood",3037663,"Carbon dioxide, total [Moles/volume] in Arterial blood by calculation"
+"Carbon dioxide, total [Moles/volume] in Blood",3014094,"Carbon dioxide, total [Moles/volume] in Blood"
+"Carbon dioxide, total [Moles/volume] in Blood",3031147,"Carbon dioxide, total [Moles/volume] in Blood by calculation"
+"Carbon dioxide, total [Moles/volume] in Blood",3009293,"Carbon dioxide, total [Moles/volume] in Capillary blood"
+"Carbon dioxide, total [Moles/volume] in Blood",3038734,"Carbon dioxide, total [Moles/volume] in Capillary blood by calculation"
+"Carbon dioxide, total [Moles/volume] in Blood",3015632,"Carbon dioxide, total [Moles/volume] in Serum or Plasma"
+"Carbon dioxide, total [Moles/volume] in Blood",40761031,"Carbon dioxide, total [Moles/volume] in Serum or Plasma by calculation"
+"Carbon dioxide, total [Moles/volume] in Blood",3034259,"Carbon dioxide, total [Moles/volume] in Specimen"
+"Carbon dioxide, total [Moles/volume] in Blood",3010140,"Carbon dioxide, total [Moles/volume] in Venous blood"
+"Carbon dioxide, total [Moles/volume] in Blood",3049133,"Carbon dioxide, total [Moles/volume] in Venous blood by calculation"
+Cells Counted Total [#] in Blood,3002317,Cells Counted Total [#] in Blood
+Cells Counted Total [#] in Blood,3006892,Cells Counted Total [#] in Specimen
+Cholesterol [Mass/volume] in Serum or Plasma,3027114,Cholesterol [Mass/volume] in Serum or Plasma
+Cholesterol in HDL [Mass/volume] in Serum or Plasma,3007070,Cholesterol in HDL [Mass/volume] in Serum or Plasma
+Cholesterol in LDL [Mass/volume] in Serum or Plasma,3028437,Cholesterol in LDL [Mass/volume] in Serum or Plasma
+Cholesterol in LDL [Mass/volume] in Serum or Plasma,3028288,Cholesterol in LDL [Mass/volume] in Serum or Plasma by calculation
+Cholesterol in LDL [Mass/volume] in Serum or Plasma,3007352,Cholesterol in VLDL [Mass/volume] in Serum or Plasma
+Creatinine [Mass/volume] in Urine,3017250,Creatinine [Mass/volume] in Urine
+Eosinophils [#/volume] in Blood,3013115,Eosinophils [#/volume] in Blood
+Eosinophils [#/volume] in Blood,3028615,Eosinophils [#/volume] in Blood by Automated count
+Eosinophils [#/volume] in Blood,3009932,Eosinophils [#/volume] in Blood by Manual count
+Eosinophils/100 leukocytes in Blood,3006504,Eosinophils/100 leukocytes in Blood
+Eosinophils/100 leukocytes in Blood,3010457,Eosinophils/100 leukocytes in Blood by Automated count
+Eosinophils/100 leukocytes in Cerebral spinal fluid,3022640,Eosinophils/100 leukocytes in Cerebral spinal fluid
+Erythrocyte sedimentation rate,3015183,Erythrocyte sedimentation rate
+Erythrocyte sedimentation rate,3013707,Erythrocyte sedimentation rate by Westergren method
+Erythrocytes [#/area] in Urine sediment,3048402,Erythrocytes [#/area] in Urine sediment by Automated count
+Erythrocytes [#/area] in Urine sediment,3035124,Erythrocytes [#/area] in Urine sediment by Microscopy high power field
+Erythrocytes [#/volume] in Urine,3002582,Erythrocytes [#/volume] in Urine
+Erythrocytes [#/volume] in Urine,40760857,Erythrocytes [#/volume] in Urine by Automated test strip
+Erythrocytes [#/volume] in Urine,3045424,Erythrocytes [Presence] in Urine
+Erythrocytes [#/volume] in Body fluid,3010910,Erythrocytes [#/volume] in Body fluid
+Ferritin [Mass/volume] in Serum or Plasma,3001122,Ferritin [Mass/volume] in Serum or Plasma
+Fibrinogen [Mass/volume] in Platelet poor plasma by Coagulation assay,3016407,Fibrinogen [Mass/volume] in Platelet poor plasma by Coagulation assay
+Gamma glutamyl transferase [Enzymatic activity/volume] in Serum or Plasma,3026910,Gamma glutamyl transferase [Enzymatic activity/volume] in Serum or Plasma
+Globulin [Mass/volume] in Serum or Plasma,3010568,Globulin [Mass/volume] in Plasma
+Globulin [Mass/volume] in Serum or Plasma,3021886,Globulin [Mass/volume] in Serum
+Globulin [Mass/volume] in Serum or Plasma,3027970,Globulin [Mass/volume] in Serum by calculation
+Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma,3030354,Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)
+Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma,40764999,"Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (CKD-EPI)"
+Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma,46236952,"Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (MDRD)"
+Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma,3053283,"Glomerular filtration rate/1.73 sq M.predicted among blacks [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (MDRD)"
+Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma,3049187,"Glomerular filtration rate/1.73 sq M.predicted among non-blacks [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (MDRD)"
+Glucose [Mass/volume] in Urine,3020399,Glucose [Mass/volume] in Urine
+Glucose [Mass/volume] in Urine,3039896,Glucose [Mass/volume] in Urine by Automated test strip
+Glucose [Mass/volume] in Urine,3024629,Glucose [Mass/volume] in Urine by Test strip
+Glucose [Mass/volume] in Urine,40762249,Glucose [Moles/volume] in Urine by Automated test strip
+Hemoglobin [Presence] in Urine by Test strip,40760861,Hemoglobin [Presence] in Urine by Automated test strip
+Hemoglobin [Presence] in Urine by Test strip,3011397,Hemoglobin [Presence] in Urine by Test strip
+Hemoglobin A1c/Hemoglobin.total in Blood,3004410,Hemoglobin A1c/Hemoglobin.total in Blood
+Human metapneumovirus RNA [Presence] in Specimen by NAA with probe detection,3042194,Human metapneumovirus RNA [Presence] in Specimen by NAA with probe detection
+Hypochromia [Presence] in Blood by Light microscopy,3021303,Hypochromia [Presence] in Blood by Light microscopy
+IgA [Mass/volume] in Serum or Plasma,3007164,IgA [Mass/volume] in Serum or Plasma
+Immature granulocytes [#/volume] in Blood,3040168,Immature granulocytes [#/volume] in Blood
+Immature granulocytes [#/volume] in Blood,3041084,Immature granulocytes [#/volume] in Blood by Automated count
+Immature granulocytes/100 leukocytes in Blood,3050479,Immature granulocytes/100 leukocytes in Blood
+Immature granulocytes/100 leukocytes in Blood,42869452,Immature granulocytes/100 leukocytes in Blood by Automated count
+Immature granulocytes/100 leukocytes in Blood,40771529,Immature granulocytes/100 leukocytes in Body fluid
+Influenza virus A RNA [Presence] in Specimen,3042219,Influenza virus A RNA [#/volume] (viral load) in Specimen by NAA with probe detection
+Influenza virus A RNA [Presence] in Specimen,21493332,Influenza virus A RNA [Presence] in Nasopharynx by NAA with non-probe detection
+Influenza virus A RNA [Presence] in Specimen,37020635,Influenza virus A RNA [Presence] in Respiratory specimen by NAA with probe detection
+Influenza virus A RNA [Presence] in Specimen,3044938,Influenza virus A RNA [Presence] in Specimen by NAA with probe detection
+Influenza virus B RNA [Presence] in Specimen,37021252,Influenza virus B RNA [Presence] in Respiratory specimen by NAA with probe detection
+Influenza virus B RNA [Presence] in Specimen,3038288,Influenza virus B RNA [Presence] in Specimen by NAA with probe detection
+INR in Platelet poor plasma by Coagulation assay,3022217,INR in Platelet poor plasma by Coagulation assay
+Iron [Mass/volume] in Serum or Plasma,3002400,Iron [Mass/volume] in Serum or Plasma
+Iron binding capacity in Serum or Plasma,3021044,Iron binding capacity [Mass/volume] in Serum or Plasma
+Iron binding capacity in Serum or Plasma,3009577,Iron binding capacity [Moles/volume] in Serum or Plasma
+Iron saturation [Mass Fraction] in Serum or Plasma,3000185,Iron saturation [Mass Fraction] in Serum or Plasma
+Ketones [Presence] in Urine by Test strip,3030173,Ketones [Mass/volume] in Urine by Automated test strip
+Ketones [Presence] in Urine by Test strip,3023539,Ketones [Mass/volume] in Urine by Test strip
+Ketones [Presence] in Urine by Test strip,40760844,Ketones [Presence] in Urine by Automated test strip
+Ketones [Presence] in Urine by Test strip,3035350,Ketones [Presence] in Urine by Test strip
+Lactate [Mass/volume] in Blood,40762125,Lactate [Mass/volume] in Blood
+Lactate [Mass/volume] in Blood,3018405,Lactate [Moles/volume] in Arterial blood
+Lactate [Mass/volume] in Blood,3047181,Lactate [Moles/volume] in Blood
+Lactate [Mass/volume] in Blood,3014111,Lactate [Moles/volume] in Serum or Plasma
+Lactate [Mass/volume] in Blood,3008037,Lactate [Moles/volume] in Venous blood
+Lead [Mass/volume] in Capillary blood,3028406,Lead [Mass/volume] in Capillary blood
+Leukocyte esterase [Presence] in Urine by Test strip,40763086,Leukocyte esterase [Presence] in Urine by Automated test strip
+Leukocyte esterase [Presence] in Urine by Test strip,3000348,Leukocyte esterase [Presence] in Urine by Test strip
+Leukocytes [#/area] in Urine sediment by Microscopy high power field,3035583,Leukocytes [#/area] in Urine sediment by Microscopy high power field
+Lipase [Enzymatic activity/volume] in Serum or Plasma,3004905,Lipase [Enzymatic activity/volume] in Serum or Plasma
+Lipase [Enzymatic activity/volume] in Serum or Plasma,3023221,Lipoprotein lipase [Enzymatic activity/volume] in Serum or Plasma
+Lymphocytes [#/volume] in Blood,3019198,Lymphocytes [#/volume] in Blood
+Lymphocytes [#/volume] in Blood,3004327,Lymphocytes [#/volume] in Blood by Automated count
+Lymphocytes [#/volume] in Blood,3003215,Lymphocytes [#/volume] in Blood by Manual count
+Lymphocytes/100 leukocytes in Blood,3002030,Lymphocytes/100 leukocytes in Blood
+Lymphocytes/100 leukocytes in Blood,3037511,Lymphocytes/100 leukocytes in Blood by Automated count
+Magnesium in Serum or Plasma,3001420,Magnesium [Mass/volume] in Serum or Plasma
+Magnesium in Serum or Plasma,3012095,Magnesium [Moles/volume] in Serum or Plasma
+MCHC [Mass/volume] by Automated count,3009744,MCHC [Mass/volume] by Automated count
+Metamyelocytes/100 leukocytes in Blood,3002179,Metamyelocytes/100 leukocytes in Blood
+Methemoglobin/Hemoglobin.total in Blood,3006217,Methemoglobin/Hemoglobin.total in Arterial blood
+Methemoglobin/Hemoglobin.total in Blood,3007930,Methemoglobin/Hemoglobin.total in Blood
+Methemoglobin/Hemoglobin.total in Blood,3024889,Methemoglobin/Hemoglobin.total in Venous blood
+Microcytes [Presence] in Blood by Light microscopy,3037885,Microcytes [Presence] in Blood by Light microscopy
+Monocytes [#/volume] in Blood,3001604,Monocytes [#/volume] in Blood
+Monocytes [#/volume] in Blood,3033575,Monocytes [#/volume] in Blood by Automated count
+Monocytes [#/volume] in Blood,3034107,Monocytes [#/volume] in Blood by Manual count
+Monocytes/100 leukocytes in Blood,3019069,Monocytes/100 leukocytes in Blood
+Monocytes/100 leukocytes in Blood,3011948,Monocytes/100 leukocytes in Blood by Automated count
+Mycoplasma pneumoniae DNA [Presence] in Specimen by NAA with probe detection,3002482,Mycoplasma pneumoniae DNA [Presence] in Specimen by NAA with probe detection
+Myelocytes/100 leukocytes in Blood,3017181,Myelocytes/100 leukocytes in Blood
+Myelocytes/100 leukocytes in Blood,3018229,Myelocytes/100 leukocytes in Blood by Manual count
+Natriuretic peptide B [Mass/volume] in Serum or Plasma,3011960,Natriuretic peptide B [Mass/volume] in Serum or Plasma
+Neutrophils [#/volume] in Blood,3017732,Neutrophils [#/volume] in Blood
+Neutrophils [#/volume] in Blood,3013650,Neutrophils [#/volume] in Blood by Automated count
+Nitrite [Presence] in Urine by Test strip,3030758,Nitrite [Presence] in Urine by Automated test strip
+Nitrite [Presence] in Urine by Test strip,3021601,Nitrite [Presence] in Urine by Test strip
+Nucleated erythrocytes [#/volume] in Blood,3001490,Nucleated erythrocytes [#/volume] in Blood
+Nucleated erythrocytes [#/volume] in Blood,3007238,Nucleated erythrocytes [#/volume] in Blood by Automated count
+Nucleated erythrocytes [#/volume] in Blood,3028129,Nucleated erythrocytes [#/volume] in Body fluid
+Nucleated erythrocytes/100 leukocytes [Ratio] in Blood,3034708,Nucleated erythrocytes/100 leukocytes [Ratio] in Blood
+Nucleated erythrocytes/100 leukocytes [Ratio] in Blood,40761514,Nucleated erythrocytes/100 leukocytes [Ratio] in Blood by Automated count
+Nucleated erythrocytes/100 leukocytes [Ratio] in Blood,3003311,Nucleated erythrocytes/100 leukocytes [Ratio] in Blood by Manual count
+Nucleated erythrocytes/100 leukocytes [Ratio] in Blood,3053291,Nucleated erythrocytes/100 leukocytes [Ratio] in Body fluid
+Ovalocytes [Presence] in Blood by Light microscopy,3027920,Ovalocytes [Presence] in Blood by Light microscopy
+Oxygen [Partial pressure] in Blood,3022803,Oxygen [Partial pressure] adjusted to patient's actual temperature in Arterial blood
+Oxygen [Partial pressure] in Blood,3013702,Oxygen [Partial pressure] adjusted to patient's actual temperature in Blood
+Oxygen [Partial pressure] in Blood,3027801,Oxygen [Partial pressure] in Arterial blood
+Oxygen [Partial pressure] in Blood,3027315,Oxygen [Partial pressure] in Blood
+Oxygen [Partial pressure] in Blood,3028626,Oxygen [Partial pressure] in Capillary blood
+Oxygen [Partial pressure] in Blood,3024354,Oxygen [Partial pressure] in Venous blood
+Oxygen saturation Calculated from oxygen partial pressure in Blood,3039426,Oxygen saturation Calculated from oxygen partial pressure in Arterial blood
+Oxygen saturation Calculated from oxygen partial pressure in Blood,3011367,Oxygen saturation Calculated from oxygen partial pressure in Blood
+Oxygen saturation Calculated from oxygen partial pressure in Blood,3039986,Oxygen saturation Calculated from oxygen partial pressure in Capillary blood
+Oxygen saturation Calculated from oxygen partial pressure in Blood,44786762,Oxygen saturation Calculated from oxygen partial pressure in Mixed venous blood
+Oxygen saturation Calculated from oxygen partial pressure in Blood,3041253,Oxygen saturation Calculated from oxygen partial pressure in Venous blood
+Oxygen saturation Calculated from oxygen partial pressure in Blood,3016502,Oxygen saturation in Arterial blood
+Parainfluenza virus 1 RNA [Presence] in Specimen by NAA with probe detection,3025634,Parainfluenza virus 1 RNA [Presence] in Specimen by NAA with probe detection
+Parainfluenza virus 2 RNA [Presence] in Specimen by NAA with probe detection,3012158,Parainfluenza virus 2 RNA [Presence] in Specimen by NAA with probe detection
+Parainfluenza virus 3 RNA [Presence] in Specimen by NAA with probe detection,3006262,Parainfluenza virus 3 RNA [Presence] in Specimen by NAA with probe detection
+Parainfluenza virus 4 RNA [Presence] in Specimen by NAA,21493340,Parainfluenza virus 4 RNA [Presence] in Nasopharynx by NAA with non-probe detection
+Parainfluenza virus 4 RNA [Presence] in Specimen by NAA,3038297,Parainfluenza virus 4 RNA [Presence] in Specimen by NAA with probe detection
+pH of Blood,3019977,pH of Arterial blood
+pH of Blood,3029473,pH of Arterial blood adjusted to patient's actual temperature
+pH of Blood,3006598,pH of Arterial cord blood
+pH of Blood,3010421,pH of Blood
+pH of Blood,3030091,pH of Blood adjusted to patient's actual temperature
+pH of Blood,3009343,pH of Capillary blood
+pH of Blood,3018418,pH of Serum or Plasma
+pH of Blood,3012544,pH of Venous blood
+pH of Blood,3038999,pH of Venous blood adjusted to patient's actual temperature
+pH of Urine by Test strip,3029305,pH of Urine by Automated test strip
+pH of Urine by Test strip,3022621,pH of Urine by Test strip
+Phosphate in Specimen,3011904,Phosphate [Mass/volume] in Serum or Plasma
+Phosphate in Specimen,3013294,Phosphate [Moles/volume] in Specimen
+Polychromasia [Presence] in Blood by Light microscopy,3011987,Polychromasia [Presence] in Blood by Light microscopy
+Potassium [Moles/volume] in Blood,3043409,Potassium [Moles/volume] in Arterial blood
+Potassium [Moles/volume] in Blood,3005456,Potassium [Moles/volume] in Blood
+Potassium [Moles/volume] in Blood,3023103,Potassium [Moles/volume] in Serum or Plasma
+Promyelocytes/100 leukocytes in Blood,3021440,Promyelocytes/100 leukocytes in Blood
+Protein [Mass/volume] in Serum or Plasma,3020630,Protein [Mass/volume] in Serum or Plasma
+Protein [Mass/volume] in Urine by Test strip,3029872,Protein [Mass/volume] in Urine by Automated test strip
+Protein [Mass/volume] in Urine by Test strip,3005897,Protein [Mass/volume] in Urine by Test strip
+Reticulocytes/100 erythrocytes in Blood by Automated count,3007124,Reticulocytes/100 erythrocytes in Blood by Automated count
+Rhinovirus+Enterovirus RNA [Presence] in Specimen by NAA with probe detection,3040684,Rhinovirus+Enterovirus RNA [Presence] in Specimen by NAA with probe detection
+Schistocytes [Presence] in Blood by Light microscopy,3019880,Schistocytes [Presence] in Blood by Light microscopy
+Segmented neutrophils/100 leukocytes in Blood,3017354,Segmented neutrophils/100 leukocytes in Blood
+Sodium [Moles/volume] in Blood,3000285,Sodium [Moles/volume] in Blood
+Sodium [Moles/volume] in Blood,3019550,Sodium [Moles/volume] in Serum or Plasma
+Specific gravity of Urine,3033543,Specific gravity of Urine
+Specific gravity of Urine,3039919,Specific gravity of Urine by Automated test strip
+Specific gravity of Urine,3019150,Specific gravity of Urine by Refractometry
+Specific gravity of Urine,3000330,Specific gravity of Urine by Test strip
+Streptococcus pyogenes [Presence] in Specimen,3000924,Streptococcus pyogenes [Presence] in Throat by Organism specific culture
+Streptococcus pyogenes [Presence] in Specimen,3033319,Streptococcus pyogenes Ag [Presence] in Throat
+Streptococcus pyogenes [Presence] in Specimen,21491660,Streptococcus pyogenes Ag [Presence] in Throat by Rapid immunoassay
+Streptococcus pyogenes [Presence] in Specimen,40763543,Streptococcus pyogenes DNA [Presence] in Throat by NAA with probe detection
+Streptococcus pyogenes [Presence] in Specimen,3009769,Streptococcus pyogenes rRNA [Presence] in Specimen by Probe
+Tacrolimus [Mass/volume] in Blood,3026250,Tacrolimus [Mass/volume] in Blood
+Tacrolimus [Mass/volume] in Blood,44786754,Tacrolimus [Mass/volume] in Blood by LC/MS/MS
+Target cells [Presence] in Blood by Light microscopy,3025616,Target cells [Presence] in Blood by Light microscopy
+Thyrotropin [Units/volume] in Serum or Plasma,3009201,Thyrotropin [Units/volume] in Serum or Plasma
+Thyrotropin [Units/volume] in Serum or Plasma,3019170,Thyrotropin [Units/volume] in Serum or Plasma by Detection limit <= 0.005 mIU/L
+Thyroxine (T4) [Mass/volume] in Serum or Plasma,3016991,Thyroxine (T4) [Mass/volume] in Serum or Plasma
+Thyroxine (T4) [Mass/volume] in Serum or Plasma,3008598,Thyroxine (T4) free [Mass/volume] in Serum or Plasma
+Thyroxine (T4) [Mass/volume] in Serum or Plasma,3024675,Thyroxine (T4) free [Mass/volume] in Serum or Plasma by Dialysis
+Tissue transglutaminase IgA Ab [Units/volume] in Serum,3019050,Tissue transglutaminase IgA Ab [Units/volume] in Serum
+Triglyceride in Serum or Plasma,3022192,Triglyceride [Mass/volume] in Serum or Plasma
+Triglyceride in Serum or Plasma,3025839,Triglyceride [Moles/volume] in Serum or Plasma
+Urate [Mass/volume] in Serum or Plasma,3037556,Urate [Mass/volume] in Serum or Plasma
+Urobilinogen [Mass/volume] in Urine,3007950,Urobilinogen [Mass/volume] in Urine
+Urobilinogen [Mass/volume] in Urine,3029870,Urobilinogen [Mass/volume] in Urine by Automated test strip
+Urobilinogen [Mass/volume] in Urine,3037072,Urobilinogen [Mass/volume] in Urine by Test strip
+Urobilinogen [Mass/volume] in Urine,3006473,Urobilinogen [Units/volume] in Urine by Test strip
+Variant lymphocytes/100 leukocytes in Blood,3013498,Variant lymphocytes/100 leukocytes in Blood
+Variant lymphocytes/100 leukocytes in Blood,3037234,Variant lymphocytes/100 leukocytes in Blood by Manual count
+Troponin I.cardiac [Mass/volume' in Blood,3021337,Troponin I.cardiac [Mass/volume] in Serum or Plasma
+Troponin I.cardiac [Mass/volume' in Blood,3033745,Troponin I.cardiac [Mass/volume] in Blood
+Troponin I.cardiac [Mass/volume' in Blood,36306105,Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method
+Troponin I.cardiac [Mass/volume' in Blood,3032971,Troponin I.cardiac [Mass/volume] in Serum or Plasma by Detection limit <= 0.01 ng/mL
+Troponin T.cardiac [Mass/volume] in Blood,3048529,Troponin T.cardiac [Mass/volume] in Blood
+Troponin T.cardiac [Mass/volume] in Blood,3019572,Troponin T.cardiac [Mass/volume] in Venous blood
+Troponin T.cardiac [Mass/volume] in Blood,3019800,Troponin T.cardiac [Mass/volume] in Serum or Plasma
+Troponin T.cardiac [Mass/volume] in Blood,40769783,Troponin T.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method
+Creatine kinase.MB [Mass/volume] in Blood,3005785,Creatine kinase.MB [Mass/volume] in Serum or Plasma
+Creatine kinase.MB [Mass/volume] in Blood,3033236,Creatine kinase.MB [Mass/volume] in Blood
+Creatine kinase.MB [Mass/volume] in Blood,42529209,Creatine kinase.MB [Mass/volume] in Serum or Plasma by Immunoassay

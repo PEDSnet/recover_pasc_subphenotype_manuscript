@@ -1,0 +1,1075 @@
+---
+title: "PASC Subphenotypes via Concept Embeddings: Tables and Figures (7/2/2024)"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_collapsed: yes
+    toc_float: yes
+---
+
+
+```{r include=FALSE}
+
+require(ggtext)
+# Default taken from R notebook behavior: when knitting, wd will always be location of notebook
+base_dir <- '..'
+Sys.setenv(PEDSNET_SKIP_REQUEST_EXECUTION=1)
+try(source('../site/run.R')) # May not be able to make db connection
+
+# Set to "local" to read data from ../results, or another value to read from db
+data_source <- if_else(config('execution_mode') == 'distribution', 'local', 'not_local')
+
+require(tibble)
+require(knitr)
+require(kableExtra)
+require(readr)
+require(RColorBrewer)
+require(tableone)
+library(ggtext)
+
+get_results <- function(tbl_name) {
+  if (data_source == 'local') {
+    rslt <- read_csv(paste0('../results/', tbl_name, '.csv'))
+  }
+  else {
+    rslt <- results_tbl(tbl_name) %>% collect()
+  }
+  rslt
+}
+
+
+prettify_kable <- function(data) {
+  data %>% kable(digits = 4, format.args = list(big.mark = ',')) %>%
+    kable_styling(bootstrap_options = c("striped", "hover")) %>%
+    column_spec(1, bold = T, border_right = T)
+}
+
+output_dir='/mnt/rosetta/lormanv'
+TAG='_320'
+
+
+
+supercluster_df_train<-results_tbl(paste('supercluster_df_train', TAG, sep='')) %>% collect
+supercluster_df_test<-results_tbl(paste('supercluster_df_test', TAG, sep='')) %>% collect
+  
+
+clust_rename_train<-function(clust_tbl){
+  clust_tbl %>%
+    mutate(cluster=case_when(
+      cluster=="0"~"0: Upper respiratory,\n obstructive",
+      cluster=="4"~"4: Upper respiratory,\n inflammatory, younger",
+      cluster=="5"~"5: Upper respiratory,\n inflammatory, older",
+      cluster=="2"~"2: Lower respiratory,\n more severe",
+      cluster=="3"~"3: Lower respiratory,\n less severe",
+      cluster=="1"~"1: Musculoskeletal pain",
+      cluster=="7"~"7: Gastrointestinal symptoms",
+      cluster=="8"~"8: Headache",
+      cluster=="9"~"9: Neuropsychiatric\n conditions I",
+      cluster=="10"~"10: Neuropsychiatric\n conditions II",
+      cluster=="6"~"6: Fatigue"
+    ))
+}
+ 
+clust_rename_test<-function(clust_tbl){
+  clust_tbl %>%
+    mutate(cluster=case_when(
+      cluster=="1"~"1: Upper respiratory,\n obstructive",
+      cluster=="8"~"8: Upper respiratory,\n inflammatory, younger",
+      cluster=="7"~"7: Upper respiratory,\n inflammatory, older",
+      cluster=="0"~"0: Lower respiratory,\n more severe",
+      cluster=="6"~"6: Lower respiratory,\n less severe",
+      cluster=="2"~"2: Musculoskeletal pain I",
+      cluster=="3"~"3: Musculoskeletal pain II",
+      cluster=="9"~"9: Gastrointestinal symptoms",
+      cluster=="11"~"11: Headache",
+      cluster=="10"~"10: Neuropsychiatric\n conditions",
+      cluster=="5"~"5: Respiratory, non-specific",
+      cluster=="4"~"4: Fatigue"
+    ))
+}
+
+
+test_levels=c("Respiratory/cardiac\n symptoms", "Musculoskeletal\n pain", "Neuropsychiatric\n conditions",
+                                                    "Gastrointestinal\n symptoms", "Headache", "Fatigue")
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+cohort_train<-results_tbl(paste('cp_aws_v3_train', TAG, sep='')) %>% 
+  dplyr::select(-"0", -"1", -"2", -"3", -"4", -"5", -"6", -"7", -"8", -"9", -"10") %>% 
+  mutate(cohort_group='train') %>% 
+  collect
+
+cohort_test<-results_tbl(paste('cp_aws_v3_test', TAG, sep='')) %>% 
+    dplyr::select(-"0", -"1", -"2", -"3", -"4", -"5", -"6", -"7", -"8", -"9",
+                -"10", -"11") %>%
+  mutate(cohort_group='test') %>% 
+  collect
+
+cohort<-cohort_train %>% dplyr::union(cohort_test) %>%
+  mutate(cohort_entry_period=case_when(
+    cohort_entry_period=='jul_oct_21'~'July-October 2021',
+    cohort_entry_period=='nov_feb_22'~'November-February 2022',
+    cohort_entry_period=='jul_oct_20'~'July-October 2020',
+    cohort_entry_period=='jul_aug_22'~'July-August 2022',
+    cohort_entry_period=='mar_jun_21'~'March-June 2021',
+    cohort_entry_period=='nov_feb_21'~'November-February 2021',
+    cohort_entry_period=='mar_jun_22'~'March-June 2022',
+    cohort_entry_period=='mar_jun_20'~'March-June 2020'
+  )) %>%
+  mutate(cohort_entry_period=factor(cohort_entry_period, 
+                                    levels=c("March-June 2020", "July-October 2020", "November-February 2021", "March-June 2021", "July-October 2021",
+                                             "November-February 2022", "March-June 2022", "July-August 2022"))) %>%
+  mutate(obs_age_cat=factor(obs_age_cat, levels=c("<1", "1-4", "5-11", "12-15", "16-20"))) %>%
+  mutate(pmca_index=as.factor(pmca_index)) %>%
+  mutate(hosp_acute_flag=as.factor(hosp_acute_flag)) %>%
+  mutate(icu_acute_flag=as.factor(icu_acute_flag)) %>%
+  mutate(sex_cat=case_when(
+    sex_cat=='Male' ~ 'Male/Other/Unknown',
+    sex_cat=='Other/unknown' ~ 'Male/Other/Unknown',
+    TRUE~sex_cat
+  ))
+
+cohort_no_evidence<-results_tbl(paste('cp_no_evidence', TAG, sep='')) %>% 
+    dplyr::select(-"0", -"1", -"2", -"3", -"4", -"5", -"6", -"7", -"8", -"9",
+                -"10", -"11", -"12", -"13", -"14", -"15") %>%
+  mutate(cohort_group='no_evidence') %>% 
+  collect
+
+```
+
+# Main analysis
+
+## Table 1: Study sample characteristics
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+var_label_list <- list(sex_cat = "Sex",
+                       eth_cat = "Race/ethnicity",
+                       cohort_entry_period="Cohort entry period",
+                       obs_age_cat = "Age group",
+                       entry_age="Age",
+                       icu_acute_flag="ICU (acute)",
+                       hosp_acute_flag="Hospitalized (acute)",
+                       pmca_index="Presence of existing chronic condition",
+                       person_severity_index="COVID severity"#,
+)
+labelled::var_label(cohort) <- var_label_list
+
+vars <- c("obs_age_cat", "sex_cat", "eth_cat", "cohort_entry_period", "icu_acute_flag", "hosp_acute_flag", "person_severity_index", "pmca_index"#,
+          )
+tableone_input <- CreateTableOne(vars = vars, strata = "cohort_group", data = cohort %>% 
+                                   mutate(cohort_group=case_when(cohort_group=="train"~"Cohort A", cohort_group=="test"~"Cohort B")),
+                                 addOverall=TRUE, test = FALSE, smd=TRUE)
+
+
+
+
+print(tableone_input, smd = TRUE, printToggle = FALSE, varLabels=TRUE, showAllLevels = TRUE, formatOptions = list(big.mark = ",", scientific=FALSE), catDigits=1, contDigits=1) %>%
+  prettify_kable()
+```
+
+
+## Figure 1: Subphenotype model flowchart
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=20, fig.height=10}
+require(png)
+knitr::include_graphics('../results/subphenotype_flowchart_6_17.png')
+
+```
+
+## Figure 2: Clustered embeddings (Cohort B)
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=20, fig.height=14}
+
+data_test<-cohort_test_temp<-cohort_test %>%  
+  mutate(imputed_cluster=as.character(imputed_cluster)) %>% 
+  inner_join(supercluster_df_test, by=c('imputed_cluster'='cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  ))
+         
+x_vals<-data_test %>% pull(x)
+x_quants<-quantile(x_vals, probs=c(0.01, 0.99))
+x_min=x_quants[1]
+x_max=x_quants[2]
+y_vals<-data_test %>% pull(y)
+y_quants<-quantile(y_vals, probs=c(0.01, 0.99))
+y_min=y_quants[1]
+y_max=y_quants[2]
+
+g<-data_test %>% 
+  mutate(cluster=as.character(supercluster)) %>% 
+  rename(Subphenotype=supercluster) %>% filter(x>x_min, x<x_max, y>y_min, y<y_max) %>% ggplot(aes(x=x, y=y, color=Subphenotype))+geom_point() +  #theme(panel.background = element_blank())+
+      theme(legend.text=element_text(size=20), legend.title=element_text(size=20))#+scale_fill_manual(values=subphenotypeColors)
+print(g)
+
+
+#h<-cohort_test %>% filter(cluster!=-1)%>% rename(Cluster=cluster) %>% filter(x>x_min, x<x_max, y>y_min, y<y_max) %>% ggplot(aes(x=x, y=y, color=Cluster))+geom_point() +  theme(panel.background = element_blank())#+
+     # theme(legend.text=element_text(size=12))#scale_fill_manual(values=subphenotypeColors)
+#print(h)
+
+```
+
+## Figure 3: Heatmap of incident postacute diagnoses (Cohort B)
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=17, fig.height=10}
+
+clust_props<-cohort_test %>%
+  mutate(imputed_cluster=as.character(imputed_cluster)) %>% 
+  inner_join(supercluster_df_test, by=c('imputed_cluster'='cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(supercluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(subtype_prop=round(n_persons/n_total, 4)) %>%
+  dplyr::select(supercluster, subtype_prop)
+
+
+
+heatmap_df_test<-results_tbl(paste('supercluster_heatmap_df_v3_test', TAG, sep='')) %>% collect%>%
+  mutate(Subphenotype=case_when(
+    Subphenotype=='Behavioral health'~'Neuropsychiatric\n conditions',
+    Subphenotype=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~Subphenotype
+  )) %>% 
+  left_join(clust_props, by=c('Subphenotype'='supercluster')) %>% 
+    mutate(Condition=case_when(
+    Condition=='Pasc'~'PASC Diagnosis',
+    Condition=='Covid19'~'COVID-19 Diagnosis',
+    Condition=='Abnormal Findings Without Diagnosis: Pasc-Related'~'Abnormal Findings Without Diagnosis: PASC-Related',
+    Condition=='Cardiovascular Signs And Sx'~'Cardiovascular Signs and Symptoms',
+    Condition=='Respiratory Signs And Sx'~'Respiratory Signs and Symptoms',
+    Condition=='Pots'~'POTS and POTS-like symptoms',
+    Condition=='Emotional Distress'~'Neuropsychiatric Conditions',
+    TRUE~Condition)) %>% 
+  mutate(label=paste0(round(Proportion*100, 1), '%<sup>', cld_letter, '</sup>', sep='')) %>%
+  mutate(Subphenotype=factor(Subphenotype, levels=test_levels))%>%
+  mutate(Subphenotype=paste(Subphenotype, ' (', round(subtype_prop*100, 1), '%)', sep=''))
+  
+
+g<-ggplot(heatmap_df_test, 
+          aes(Subphenotype, Condition))+scale_x_discrete(position='top')+
+  geom_tile(aes(fill=Proportion))  + theme(axis.text.x = element_text( size=12), axis.text.y = element_text(size=12))+scale_fill_gradient(low='white', high='blue')+
+    labs(y="Condition group")+
+  geom_richtext(aes(label=label, text.color =ifelse(Proportion<0.50, "black", "white")), size=5, fill=NA, label.color=NA, parse=TRUE)
+
+
+
+
+print(g)
+
+
+
+```
+
+## Table 2: Demographic and clinical characteristics of subphenotypes (Cohort B)
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+clust_props<-cohort_test %>%
+  mutate(imputed_cluster=as.character(imputed_cluster)) %>% 
+  inner_join(supercluster_df_test, by=c('imputed_cluster'='cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(supercluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(subtype_prop=round(n_persons/n_total, 4)) %>%
+  dplyr::select(supercluster, subtype_prop)
+
+cohort_test_temp<-cohort_test %>%  
+  mutate(imputed_cluster=as.character(imputed_cluster)) %>% 
+  inner_join(supercluster_df_test, by=c('imputed_cluster'='cluster')) %>% 
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+  mutate(flag=1) %>% pivot_wider(names_from=obs_age_cat, values_from=flag, values_fill=0, names_prefix='age_')%>%
+  mutate(flag=1) %>% pivot_wider(names_from=sex_cat, values_from=flag, values_fill=0, names_prefix='sex_')%>%
+  mutate(flag=1) %>%pivot_wider(names_from=eth_cat, values_from=flag, values_fill=0, names_prefix='eth_')%>%
+  mutate(flag=1) %>%pivot_wider(names_from=cohort_entry_period, values_from=flag, values_fill=0, names_prefix='cohort_entry_period_')%>%
+ mutate(flag=1) %>% pivot_wider(names_from=pmca_index, values_from=flag, values_fill=0, names_prefix='pmca_')%>%
+ mutate(flag=1) %>% pivot_wider(names_from=person_severity_flag, values_from=flag, values_fill=0, names_prefix='severity_')
+  
+colnames(cohort_test_temp)=make.names(colnames(cohort_test_temp))
+  
+  
+
+
+cohort_sum_test<-cohort_test_temp %>% 
+  group_by(supercluster) %>%
+  summarize(
+    "Age <1"=paste(sum(age_.1), paste("(", round(sum(age_.1)*100/n(), 1), "%)", sep='')),
+    "Age 1-4"=paste(sum(age_1.4), paste("(", round(sum(age_1.4)*100/n(), 1), "%)", sep='')),
+    "Age 5-11"=paste(sum(age_5.11), paste("(", round(sum(age_5.11)*100/n(), 1), "%)", sep='')),
+    "Age 12-15"=paste(sum(age_12.15), paste("(", round(sum(age_12.15)*100/n(), 1), "%)", sep='')),
+    "Age 16-20"=paste(sum(age_16.20), paste("(", round(sum(age_16.20)*100/n(), 1), "%)", sep='')),
+    "Female"=paste(sum(sex_Female), paste("(", round(sum(sex_Female)*100/n(), 1), "%)", sep='')),
+    "Male/Other/Unknown"=paste(sum(sex_Male)+sum(sex_Other.unknown), paste("(", round((sum(sex_Male)+sum(sex_Other.unknown))*100/n(), 1), "%)", sep='')),
+    "Black/AA"=paste(sum(eth_Black.AA), paste("(", round(sum(eth_Black.AA)*100/n(), 1), "%)", sep='')),
+    "Asian/PI"=paste(sum(eth_Asian.PI), paste("(", round(sum(eth_Asian.PI)*100/n(), 1), "%)", sep='')),
+    "Hispanic"=paste(sum(eth_Hispanic), paste("(", round(sum(eth_Hispanic)*100/n(), 1), "%)", sep='')),
+    "White"=paste(sum(eth_White), paste("(", round(sum(eth_White)*100/n(), 1), "%)", sep='')),
+    "Multiple"=paste(sum(eth_Multiple), paste("(", round(sum(eth_Multiple)*100/n(), 1), "%)", sep='')),
+    "Other/Unknown"=paste(sum(eth_Other.Unknown), paste("(", round(sum(eth_Other.Unknown)*100/n(), 1), "%)", sep='')),
+    "Mar-Jun 2020"=paste(sum(cohort_entry_period_mar_jun_20), paste("(", round(sum(cohort_entry_period_mar_jun_20)*100/n(), 1), "%)", sep='')),
+    "Jul-Oct 2020"=paste(sum(cohort_entry_period_jul_oct_20), paste("(", round(sum(cohort_entry_period_jul_oct_20)*100/n(), 1), "%)", sep='')),
+    "Nov-Feb 2021"=paste(sum(cohort_entry_period_nov_feb_21), paste("(", round(sum(cohort_entry_period_nov_feb_21)*100/n(), 1), "%)", sep='')),
+     "Mar-Jun 2021"=paste(sum(cohort_entry_period_mar_jun_21), paste("(", round(sum(cohort_entry_period_mar_jun_21)*100/n(), 1), "%)", sep='')),
+    "Jul-Oct 2021"=paste(sum(cohort_entry_period_jul_oct_21), paste("(", round(sum(cohort_entry_period_jul_oct_21)*100/n(), 1), "%)", sep='')),
+    "Nov-Feb 2022"=paste(sum(cohort_entry_period_nov_feb_22), paste("(", round(sum(cohort_entry_period_nov_feb_22)*100/n(), 1), "%)", sep='')),
+      "Mar-Jun 2022"=paste(sum(cohort_entry_period_mar_jun_22), paste("(", round(sum(cohort_entry_period_mar_jun_22)*100/n(), 1), "%)", sep='')),
+    "Jul-Aug 2022"=paste(sum(cohort_entry_period_jul_aug_22), paste("(", round(sum(cohort_entry_period_jul_aug_22)*100/n(), 1), "%)", sep='')),
+    "ICU (acute)"=paste(sum(icu_acute_flag), paste("(", round(sum(icu_acute_flag)*100/n(), 1), "%)", sep='')),
+    "Hospitalized (acute)"=paste(sum(hosp_acute_flag), paste("(", round(sum(hosp_acute_flag)*100/n(), 1), "%)", sep='')),
+    "Asymptompatic"=paste(sum(severity_0), paste("(", round(sum(severity_0)*100/n(), 1), "%)", sep='')),
+    "Mild"=paste(sum(severity_1), paste("(", round(sum(severity_1)*100/n(), 1), "%)", sep='')),
+    "Moderate"=paste(sum(severity_2), paste("(", round(sum(severity_2)*100/n(), 1), "%)", sep='')),
+    "Severe"=paste(sum(severity_3), paste("(", round(sum(severity_3)*100/n(), 1), "%)", sep='')),
+    "Presence of existing chronic condition"=paste(sum(pmca_1), paste("(", round(sum(pmca_1)*100/n(), 1), "%)", sep='')))
+    
+top_codes_test<- results_tbl(paste('supercluster_top_codes_v3_test', TAG, sep='')) %>%
+  mutate(supercluster=case_when(supercluster=="Behavioral health"~"Neuropsychiatric\n conditions",
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+                                TRUE~supercluster)) %>% 
+  inner_join(vocabulary_tbl('concept') %>% dplyr::select(concept_id, concept_code), by='concept_id') %>% 
+  collect %>%
+  dplyr::select(supercluster, concept_code, concept_id, concept_name, domain_id, prop) %>%   mutate(concept_name=case_when(
+    str_length(concept_name)>70~paste(substr(concept_name, 1, 70), '...', sep=''),
+    TRUE~concept_name
+  )) %>% 
+  mutate(name_code_prop=paste(concept_code, ': ', concept_name, ' (', prop*100, '%)', sep='')) %>% 
+  filter(prop>=0.1) %>% group_by(supercluster,domain_id) %>% slice_max(prop, n=5) %>% summarize(code=paste0(name_code_prop, collapse =' <br> ')) %>%
+ pivot_wider(id_cols=c(supercluster), names_from=domain_id, values_from=code) 
+
+
+
+cohort_sum_test %>% 
+  left_join(top_codes_test, by=c('supercluster')) %>% 
+  rename("Most common conditions"="Condition") %>%
+  left_join(clust_props, by=c('supercluster')) %>% 
+  mutate(supercluster=factor(supercluster, levels=c("Respiratory/cardiac\n symptoms", "Musculoskeletal\n pain",
+                                                    "Gastrointestinal\n symptoms", "Headache", "Fatigue", "Neuropsychiatric\n conditions", "Other/\nnonspecific")))%>%
+  mutate(supercluster=paste(supercluster, ' (', round(subtype_prop*100, 1), '%)', sep='')) %>% 
+  dplyr::select(-Drug, -Procedure, -Observation) %>%
+  t %>% 
+      kable("html", escape = F) %>%
+      kable_styling(bootstrap_options = c("striped", "hover")) %>%
+    column_spec(1, bold = T, border_right = T)
+```
+
+
+# Supplementary materials
+
+## Figure S1: Heatmap of incident post-acute diagnoses (cohort A), subphenotype level
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=20, fig.height=10}
+
+clust_props<-cohort_train %>%
+  mutate(imputed_cluster=as.character(imputed_cluster)) %>% 
+  inner_join(supercluster_df_train, by=c('imputed_cluster'='cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(supercluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(subtype_prop=round(n_persons/n_total, 4)) %>%
+  dplyr::select(supercluster, subtype_prop)
+
+
+
+heatmap_df_train<-results_tbl(paste('supercluster_heatmap_df_v3_train', TAG, sep='')) %>% collect%>%
+  mutate(Subphenotype=case_when(
+    Subphenotype=='Behavioral health'~'Neuropsychiatric\n conditions',
+    Subphenotype=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~Subphenotype
+  )) %>% 
+  left_join(clust_props, by=c('Subphenotype'='supercluster')) %>% 
+    mutate(Condition=case_when(
+    Condition=='Pasc'~'PASC Diagnosis',
+    Condition=='Covid19'~'COVID-19 Diagnosis',
+    Condition=='Abnormal Findings Without Diagnosis: Pasc-Related'~'Abnormal Findings Without Diagnosis: PASC-Related',
+    Condition=='Cardiovascular Signs And Sx'~'Cardiovascular Signs and Symptoms',
+    Condition=='Respiratory Signs And Sx'~'Respiratory Signs and Symptoms',
+    Condition=='Pots'~'POTS and POTS-like symptoms',
+    Condition=='Emotional Distress'~'Neuropsychiatric Conditions',
+    TRUE~Condition)) %>% 
+  mutate(label=paste0(round(Proportion*100, 1), '%<sup>', cld_letter, '</sup>', sep='')) %>%
+  mutate(Subphenotype=factor(Subphenotype, levels=c("Respiratory/cardiac\n symptoms", "Musculoskeletal\n pain",
+                                                    "Gastrointestinal\n symptoms", "Headache", "Fatigue", "Neuropsychiatric\n conditions", "Other/\nnonspecific")))%>%
+  mutate(Subphenotype=paste(Subphenotype, ' (', round(subtype_prop*100, 1), '%)', sep=''))
+  
+
+g<-ggplot(heatmap_df_train, 
+          aes(Subphenotype, Condition))+scale_x_discrete(position='top')+
+  geom_tile(aes(fill=Proportion))  + theme(axis.text.x = element_text( size=12), axis.text.y = element_text(size=12))+scale_fill_gradient(low='white', high='blue')+
+    labs(y="Condition group")+
+  geom_richtext(aes(label=label, text.color =ifelse(Proportion<0.50, "black", "white")), size=5, fill=NA, label.color=NA, parse=TRUE)
+
+print(g)
+
+```
+
+## Figure S2-A: Heatmap, cluster level, cohort A
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=22, fig.height=10}
+
+clust_props<-cohort_train %>%
+  mutate(cluster=as.character(imputed_cluster)) %>% 
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(cluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(subtype_prop=round(n_persons/n_total, 4)) %>%
+  dplyr::select(cluster, subtype_prop)
+
+superclust_props<-cohort_train %>%
+  mutate(imputed_cluster=as.character(imputed_cluster)) %>% 
+  inner_join(supercluster_df_train, by=c('imputed_cluster'='cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(supercluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(superclust_prop=round(n_persons/n_total, 4)) %>%
+  dplyr::select(supercluster, superclust_prop)
+
+
+
+heatmap_df_train<-results_tbl(paste('imp_heatmap_df_v3_train', TAG, sep='')) %>% collect%>%
+  left_join(clust_props, by=c('Subphenotype'='cluster')) %>% 
+    mutate(Condition=case_when(
+    Condition=='Pasc'~'PASC Diagnosis',
+    Condition=='Covid19'~'COVID-19 Diagnosis',
+    Condition=='Abnormal Findings Without Diagnosis: Pasc-Related'~'Abnormal Findings Without Diagnosis: PASC-Related',
+    Condition=='Cardiovascular Signs And Sx'~'Cardiovascular Signs and Symptoms',
+    Condition=='Respiratory Signs And Sx'~'Respiratory Signs and Symptoms',
+    Condition=='Pots'~'POTS and POTS-like symptoms',
+    Condition=='Emotional Distress'~'Neuropsychiatric Conditions',
+    TRUE~Condition)) %>% 
+  mutate(label=paste0(round(Proportion*100, 1), '%<sup>', cld_letter, '</sup>', sep='')) %>%
+  inner_join(supercluster_df_train, by=c('Subphenotype'='cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+  left_join(superclust_props, by=c('supercluster')) %>% 
+  mutate(cluster=Subphenotype) %>% 
+  clust_rename_train() %>%
+  mutate(Subphenotype=cluster) %>% 
+  mutate(Subphenotype=paste(Subphenotype, ' (', round(subtype_prop*100, 1), '%)', sep='')) %>% 
+  mutate(supercluster=factor(supercluster, levels=c("Neuropsychiatric\n conditions", "Respiratory/cardiac\n symptoms", "Fatigue",
+                                                    "Gastrointestinal\n symptoms", "Headache",  
+                                                    "Musculoskeletal\n pain",
+                                                    "Dermatologic\n symptoms",
+                                                    "Other"))) %>% 
+  mutate(supercluster=paste(supercluster, ' (', round(superclust_prop*100, 1), '%)', sep=''))
+
+g<-ggplot(heatmap_df_train, 
+          aes(Subphenotype, Condition))+#scale_x_discrete(position='top')+
+  geom_tile(aes(fill=Proportion))  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+scale_fill_gradient(low='white', high='blue')+
+    labs(y="Condition group")+geom_richtext(aes(label=label, text.color =ifelse(Proportion<0.50, "black", "white")), size=5, fill=NA, label.color=NA, parse=TRUE)+facet_grid(~supercluster, scales='free_x', switch='x', space='free_x')+ theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) + theme(axis.text.x = element_text( size=12), axis.text.y = element_text(size=12))
+print(g)
+
+```
+## Figure S2-B: heatmap, cluster level, cohort B
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=22, fig.height=10}
+
+clust_props<-cohort_test %>%
+  mutate(cluster=as.character(imputed_cluster)) %>% 
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(cluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(subtype_prop=round(n_persons/n_total, 4)) %>%
+  dplyr::select(cluster, subtype_prop)
+
+superclust_props<-cohort_test %>%
+  mutate(imputed_cluster=as.character(imputed_cluster)) %>% 
+  inner_join(supercluster_df_test, by=c('imputed_cluster'='cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(supercluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(superclust_prop=round(n_persons/n_total, 4)) %>%
+  dplyr::select(supercluster, superclust_prop)
+
+
+
+heatmap_df_test<-results_tbl(paste('imp_heatmap_df_v3_test', TAG, sep='')) %>% collect%>%
+  left_join(clust_props, by=c('Subphenotype'='cluster')) %>% 
+    mutate(Condition=case_when(
+    Condition=='Pasc'~'PASC Diagnosis',
+    Condition=='Covid19'~'COVID-19 Diagnosis',
+    Condition=='Abnormal Findings Without Diagnosis: Pasc-Related'~'Abnormal Findings Without Diagnosis: PASC-Related',
+    Condition=='Cardiovascular Signs And Sx'~'Cardiovascular Signs and Symptoms',
+    Condition=='Respiratory Signs And Sx'~'Respiratory Signs and Symptoms',
+    Condition=='Pots'~'POTS and POTS-like symptoms',
+    Condition=='Emotional Distress'~'Neuropsychiatric Conditions',
+    TRUE~Condition)) %>% 
+  mutate(label=paste0(round(Proportion*100, 1), '%<sup>', cld_letter, '</sup>', sep='')) %>%
+  inner_join(supercluster_df_test, by=c('Subphenotype'='cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+  left_join(superclust_props, by=c('supercluster')) %>% 
+  mutate(cluster=Subphenotype) %>% 
+  clust_rename_test() %>%
+  mutate(Subphenotype=cluster) %>% 
+  mutate(Subphenotype=paste(Subphenotype, ' (', round(subtype_prop*100, 1), '%)', sep='')) %>% 
+  mutate(supercluster=factor(supercluster, levels=c("Neuropsychiatric\n conditions", "Respiratory/cardiac\n symptoms", "Fatigue",
+                                                    "Gastrointestinal\n symptoms", "Headache",  
+                                                    "Musculoskeletal\n pain",
+                                                    "Dermatologic\n symptoms",
+                                                    "Other"))) %>% 
+  mutate(supercluster=paste(supercluster, ' (', round(superclust_prop*100, 1), '%)', sep=''))
+
+g<-ggplot(heatmap_df_test, 
+          aes(Subphenotype, Condition))+#scale_x_discrete(position='top')+
+  geom_tile(aes(fill=Proportion))  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+scale_fill_gradient(low='white', high='blue')+
+    labs(y="Condition group")+geom_richtext(aes(label=label, text.color =ifelse(Proportion<0.50, "black", "white")), size=5, fill=NA, label.color=NA, parse=TRUE)+facet_grid(~supercluster, scales='free_x', switch='x', space='free_x')+ theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) + theme(axis.text.x = element_text( size=12), axis.text.y = element_text(size=12))
+print(g)
+```
+
+## Table S1-A: Demographic and clinical characteristics of cluster groups (cohort A)
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+clust_props<-cohort_train %>%
+  mutate(cluster=as.character(imputed_cluster)) %>% 
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(cluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(subtype_prop=round(n_persons/n_total, 4)) %>%
+  dplyr::select(cluster, subtype_prop)
+
+superclust_props<-cohort_train %>%
+  mutate(imputed_cluster=as.character(imputed_cluster)) %>% 
+  inner_join(supercluster_df_train, by=c('imputed_cluster'='cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(supercluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(superclust_prop=round(n_persons/n_total, 4)) %>%
+  dplyr::select(supercluster, superclust_prop)
+
+
+cohort_train_temp<-cohort_train %>%  mutate(cluster=as.character(imputed_cluster)) %>% 
+  inner_join(supercluster_df_train %>% 
+                                rbind(c(NA, -1L)), by=c('cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+  mutate(flag=1) %>% pivot_wider(names_from=obs_age_cat, values_from=flag, values_fill=0, names_prefix='age_')%>%
+  mutate(flag=1) %>% pivot_wider(names_from=sex_cat, values_from=flag, values_fill=0, names_prefix='sex_')%>%
+  mutate(flag=1) %>%pivot_wider(names_from=eth_cat, values_from=flag, values_fill=0, names_prefix='eth_')%>%
+  mutate(flag=1) %>%pivot_wider(names_from=cohort_entry_period, values_from=flag, values_fill=0, names_prefix='cohort_entry_period_')%>%
+ mutate(flag=1) %>% pivot_wider(names_from=pmca_index, values_from=flag, values_fill=0, names_prefix='pmca_')%>%
+ mutate(flag=1) %>% pivot_wider(names_from=person_severity_flag, values_from=flag, values_fill=0, names_prefix='severity_')
+  
+colnames(cohort_train_temp)=make.names(colnames(cohort_train_temp))
+  
+  
+
+
+cohort_sum_train<-cohort_train_temp %>% 
+  group_by(supercluster, cluster) %>%
+  summarize(
+    "Age <1"=paste(sum(age_.1), paste("(", round(sum(age_.1)*100/n(), 1), "%)", sep='')),
+    "Age 1-4"=paste(sum(age_1.4), paste("(", round(sum(age_1.4)*100/n(), 1), "%)", sep='')),
+    "Age 5-11"=paste(sum(age_5.11), paste("(", round(sum(age_5.11)*100/n(), 1), "%)", sep='')),
+    "Age 12-15"=paste(sum(age_12.15), paste("(", round(sum(age_12.15)*100/n(), 1), "%)", sep='')),
+    "Age 16-20"=paste(sum(age_16.20), paste("(", round(sum(age_16.20)*100/n(), 1), "%)", sep='')),
+    "Female"=paste(sum(sex_Female), paste("(", round(sum(sex_Female)*100/n(), 1), "%)", sep='')),
+    "Male/Other/Unknown"=paste(sum(sex_Male)+sum(sex_Other.unknown), paste("(", round((sum(sex_Male)+sum(sex_Other.unknown))*100/n(), 1), "%)", sep='')),
+    "Black/AA"=paste(sum(eth_Black.AA), paste("(", round(sum(eth_Black.AA)*100/n(), 1), "%)", sep='')),
+    "Asian/PI"=paste(sum(eth_Asian.PI), paste("(", round(sum(eth_Asian.PI)*100/n(), 1), "%)", sep='')),
+    "Hispanic"=paste(sum(eth_Hispanic), paste("(", round(sum(eth_Hispanic)*100/n(), 1), "%)", sep='')),
+    "White"=paste(sum(eth_White), paste("(", round(sum(eth_White)*100/n(), 1), "%)", sep='')),
+    "Multiple"=paste(sum(eth_Multiple), paste("(", round(sum(eth_Multiple)*100/n(), 1), "%)", sep='')),
+    "Other/Unknown"=paste(sum(eth_Other.Unknown), paste("(", round(sum(eth_Other.Unknown)*100/n(), 1), "%)", sep='')),
+    "Mar-Jun 2020"=paste(sum(cohort_entry_period_mar_jun_20), paste("(", round(sum(cohort_entry_period_mar_jun_20)*100/n(), 1), "%)", sep='')),
+    "Jul-Oct 2020"=paste(sum(cohort_entry_period_jul_oct_20), paste("(", round(sum(cohort_entry_period_jul_oct_20)*100/n(), 1), "%)", sep='')),
+    "Nov-Feb 2021"=paste(sum(cohort_entry_period_nov_feb_21), paste("(", round(sum(cohort_entry_period_nov_feb_21)*100/n(), 1), "%)", sep='')),
+     "Mar-Jun 2021"=paste(sum(cohort_entry_period_mar_jun_21), paste("(", round(sum(cohort_entry_period_mar_jun_21)*100/n(), 1), "%)", sep='')),
+    "Jul-Oct 2021"=paste(sum(cohort_entry_period_jul_oct_21), paste("(", round(sum(cohort_entry_period_jul_oct_21)*100/n(), 1), "%)", sep='')),
+    "Nov-Feb 2022"=paste(sum(cohort_entry_period_nov_feb_22), paste("(", round(sum(cohort_entry_period_nov_feb_22)*100/n(), 1), "%)", sep='')),
+      "Mar-Jun 2022"=paste(sum(cohort_entry_period_mar_jun_22), paste("(", round(sum(cohort_entry_period_mar_jun_22)*100/n(), 1), "%)", sep='')),
+    "Jul-Aug 2022"=paste(sum(cohort_entry_period_jul_aug_22), paste("(", round(sum(cohort_entry_period_jul_aug_22)*100/n(), 1), "%)", sep='')),
+    "ICU (acute)"=paste(sum(icu_acute_flag), paste("(", round(sum(icu_acute_flag)*100/n(), 1), "%)", sep='')),
+    "Hospitalized (acute)"=paste(sum(hosp_acute_flag), paste("(", round(sum(hosp_acute_flag)*100/n(), 1), "%)", sep='')),
+    "Asymptompatic"=paste(sum(severity_0), paste("(", round(sum(severity_0)*100/n(), 1), "%)", sep='')),
+    "Mild"=paste(sum(severity_1), paste("(", round(sum(severity_1)*100/n(), 1), "%)", sep='')),
+    "Moderate"=paste(sum(severity_2), paste("(", round(sum(severity_2)*100/n(), 1), "%)", sep='')),
+    "Severe"=paste(sum(severity_3), paste("(", round(sum(severity_3)*100/n(), 1), "%)", sep='')),
+    "Presence of existing chronic condition"=paste(sum(pmca_1), paste("(", round(sum(pmca_1)*100/n(), 1), "%)", sep='')))
+    
+
+top_codes_train<- results_tbl(paste('imp_top_codes_v3_train', TAG, sep='')) %>% 
+  inner_join(vocabulary_tbl('concept') %>% dplyr::select(concept_id, concept_code), by='concept_id') %>% 
+  collect %>%
+  inner_join(supercluster_df_train, by=c('cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+#  rename(Subphenotype=supercluster) %>% 
+  dplyr::select(supercluster, cluster, concept_code, concept_id, concept_name, domain_id, prop) %>%   mutate(concept_name=case_when(
+    str_length(concept_name)>70~paste(substr(concept_name, 1, 70), '...', sep=''),
+    TRUE~concept_name
+  )) %>% 
+  mutate(name_code_prop=paste(concept_code, ': ', concept_name, ' (', prop*100, '%)', sep='')) %>% 
+  filter(prop>=0.2) %>% group_by(supercluster, cluster,domain_id) %>% slice_max(prop, n=5) %>% summarize(code=paste0(name_code_prop, collapse =' <br> ')) %>%
+ pivot_wider(id_cols=c(supercluster, cluster), names_from=domain_id, values_from=code) 
+
+
+
+cohort_sum_train %>% 
+  left_join(top_codes_train, by=c('cluster', 'supercluster')) %>% 
+    left_join(clust_props, by=c('cluster')) %>% 
+    left_join(superclust_props, by=c('supercluster')) %>% 
+  clust_rename_train() %>% 
+  mutate(cluster=paste(cluster, ' (', round(subtype_prop*100, 1), '%)', sep='')) %>% 
+  mutate(supercluster=paste(supercluster, ' (', round(superclust_prop*100, 1), '%)', sep='')) %>%
+  rename("Most common conditions"="Condition", "Most common procedures"="Procedure", "Most common medications"="Drug", "Most common observations"="Observation") %>% 
+  t %>% 
+      kable("html", escape = F) %>%
+      kable_styling(bootstrap_options = c("striped", "hover")) %>%
+    column_spec(1, bold = T, border_right = T)
+```
+
+## Table S1-B: Demographic and clinical characteristics of cluster groups (cohort B)
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+clust_props<-cohort_test %>%
+  mutate(cluster=as.character(imputed_cluster)) %>% 
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(cluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(subtype_prop=round(n_persons/n_total, 4)) %>%
+  dplyr::select(cluster, subtype_prop)
+
+superclust_props<-cohort_test %>%
+  mutate(imputed_cluster=as.character(imputed_cluster)) %>% 
+  inner_join(supercluster_df_test, by=c('imputed_cluster'='cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(supercluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(superclust_prop=round(n_persons/n_total, 4)) %>%
+  dplyr::select(supercluster, superclust_prop)
+
+
+cohort_test_temp<-cohort_test %>%  mutate(cluster=as.character(imputed_cluster)) %>% 
+  inner_join(supercluster_df_test %>% 
+                                rbind(c(NA, -1L)), by=c('cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+  mutate(flag=1) %>% pivot_wider(names_from=obs_age_cat, values_from=flag, values_fill=0, names_prefix='age_')%>%
+  mutate(flag=1) %>% pivot_wider(names_from=sex_cat, values_from=flag, values_fill=0, names_prefix='sex_')%>%
+  mutate(flag=1) %>%pivot_wider(names_from=eth_cat, values_from=flag, values_fill=0, names_prefix='eth_')%>%
+  mutate(flag=1) %>%pivot_wider(names_from=cohort_entry_period, values_from=flag, values_fill=0, names_prefix='cohort_entry_period_')%>%
+ mutate(flag=1) %>% pivot_wider(names_from=pmca_index, values_from=flag, values_fill=0, names_prefix='pmca_')%>%
+ mutate(flag=1) %>% pivot_wider(names_from=person_severity_flag, values_from=flag, values_fill=0, names_prefix='severity_')
+  
+colnames(cohort_test_temp)=make.names(colnames(cohort_test_temp))
+  
+  
+
+
+cohort_sum_test<-cohort_test_temp %>% 
+  group_by(supercluster, cluster) %>%
+  summarize(
+    "Age <1"=paste(sum(age_.1), paste("(", round(sum(age_.1)*100/n(), 1), "%)", sep='')),
+    "Age 1-4"=paste(sum(age_1.4), paste("(", round(sum(age_1.4)*100/n(), 1), "%)", sep='')),
+    "Age 5-11"=paste(sum(age_5.11), paste("(", round(sum(age_5.11)*100/n(), 1), "%)", sep='')),
+    "Age 12-15"=paste(sum(age_12.15), paste("(", round(sum(age_12.15)*100/n(), 1), "%)", sep='')),
+    "Age 16-20"=paste(sum(age_16.20), paste("(", round(sum(age_16.20)*100/n(), 1), "%)", sep='')),
+    "Female"=paste(sum(sex_Female), paste("(", round(sum(sex_Female)*100/n(), 1), "%)", sep='')),
+    "Male/Other/Unknown"=paste(sum(sex_Male)+sum(sex_Other.unknown), paste("(", round((sum(sex_Male)+sum(sex_Other.unknown))*100/n(), 1), "%)", sep='')),
+    "Black/AA"=paste(sum(eth_Black.AA), paste("(", round(sum(eth_Black.AA)*100/n(), 1), "%)", sep='')),
+    "Asian/PI"=paste(sum(eth_Asian.PI), paste("(", round(sum(eth_Asian.PI)*100/n(), 1), "%)", sep='')),
+    "Hispanic"=paste(sum(eth_Hispanic), paste("(", round(sum(eth_Hispanic)*100/n(), 1), "%)", sep='')),
+    "White"=paste(sum(eth_White), paste("(", round(sum(eth_White)*100/n(), 1), "%)", sep='')),
+    "Multiple"=paste(sum(eth_Multiple), paste("(", round(sum(eth_Multiple)*100/n(), 1), "%)", sep='')),
+    "Other/Unknown"=paste(sum(eth_Other.Unknown), paste("(", round(sum(eth_Other.Unknown)*100/n(), 1), "%)", sep='')),
+    "Mar-Jun 2020"=paste(sum(cohort_entry_period_mar_jun_20), paste("(", round(sum(cohort_entry_period_mar_jun_20)*100/n(), 1), "%)", sep='')),
+    "Jul-Oct 2020"=paste(sum(cohort_entry_period_jul_oct_20), paste("(", round(sum(cohort_entry_period_jul_oct_20)*100/n(), 1), "%)", sep='')),
+    "Nov-Feb 2021"=paste(sum(cohort_entry_period_nov_feb_21), paste("(", round(sum(cohort_entry_period_nov_feb_21)*100/n(), 1), "%)", sep='')),
+     "Mar-Jun 2021"=paste(sum(cohort_entry_period_mar_jun_21), paste("(", round(sum(cohort_entry_period_mar_jun_21)*100/n(), 1), "%)", sep='')),
+    "Jul-Oct 2021"=paste(sum(cohort_entry_period_jul_oct_21), paste("(", round(sum(cohort_entry_period_jul_oct_21)*100/n(), 1), "%)", sep='')),
+    "Nov-Feb 2022"=paste(sum(cohort_entry_period_nov_feb_22), paste("(", round(sum(cohort_entry_period_nov_feb_22)*100/n(), 1), "%)", sep='')),
+      "Mar-Jun 2022"=paste(sum(cohort_entry_period_mar_jun_22), paste("(", round(sum(cohort_entry_period_mar_jun_22)*100/n(), 1), "%)", sep='')),
+    "Jul-Aug 2022"=paste(sum(cohort_entry_period_jul_aug_22), paste("(", round(sum(cohort_entry_period_jul_aug_22)*100/n(), 1), "%)", sep='')),
+    "ICU (acute)"=paste(sum(icu_acute_flag), paste("(", round(sum(icu_acute_flag)*100/n(), 1), "%)", sep='')),
+    "Hospitalized (acute)"=paste(sum(hosp_acute_flag), paste("(", round(sum(hosp_acute_flag)*100/n(), 1), "%)", sep='')),
+    "Asymptompatic"=paste(sum(severity_0), paste("(", round(sum(severity_0)*100/n(), 1), "%)", sep='')),
+    "Mild"=paste(sum(severity_1), paste("(", round(sum(severity_1)*100/n(), 1), "%)", sep='')),
+    "Moderate"=paste(sum(severity_2), paste("(", round(sum(severity_2)*100/n(), 1), "%)", sep='')),
+    "Severe"=paste(sum(severity_3), paste("(", round(sum(severity_3)*100/n(), 1), "%)", sep='')),
+    "Presence of existing chronic condition"=paste(sum(pmca_1), paste("(", round(sum(pmca_1)*100/n(), 1), "%)", sep='')))
+    
+    
+top_codes_test<- results_tbl(paste('imp_top_codes_v3_test', TAG, sep='')) %>% 
+  inner_join(vocabulary_tbl('concept') %>% dplyr::select(concept_id, concept_code), by='concept_id') %>% 
+  collect %>%
+  inner_join(supercluster_df_test, by=c('cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+#  rename(Subphenotype=supercluster) %>% 
+  dplyr::select(supercluster, cluster, concept_code, concept_id, concept_name, domain_id, prop) %>%   mutate(concept_name=case_when(
+    str_length(concept_name)>70~paste(substr(concept_name, 1, 70), '...', sep=''),
+    TRUE~concept_name
+  )) %>% 
+  mutate(name_code_prop=paste(concept_code, ': ', concept_name, ' (', prop*100, '%)', sep='')) %>% 
+  filter(prop>=0.2) %>% group_by(supercluster, cluster,domain_id) %>% slice_max(prop, n=5) %>% summarize(code=paste0(name_code_prop, collapse =' <br> ')) %>%
+ pivot_wider(id_cols=c(supercluster, cluster), names_from=domain_id, values_from=code) 
+
+
+
+cohort_sum_test %>% 
+  left_join(top_codes_test, by=c('cluster', 'supercluster')) %>% 
+    left_join(clust_props, by=c('cluster')) %>% 
+    left_join(superclust_props, by=c('supercluster')) %>% 
+  clust_rename_test() %>% 
+  mutate(cluster=paste(cluster, ' (', round(subtype_prop*100, 1), '%)', sep='')) %>% 
+  mutate(supercluster=paste(supercluster, ' (', round(superclust_prop*100, 1), '%)', sep='')) %>%
+  rename("Most common conditions"="Condition", "Most common procedures"="Procedure", "Most common medications"="Drug", "Most common observations"="Observation") %>% 
+  t %>% 
+      kable("html", escape = F) %>%
+      kable_styling(bootstrap_options = c("striped", "hover")) %>%
+    column_spec(1, bold = T, border_right = T)
+```
+
+## Figure S3: Heatmap for No evidence cohort
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=22, fig.height=10}
+clust_props<-cohort_no_evidence %>%
+  mutate(cluster=as.character(imputed_cluster)) %>% 
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(cluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(subtype_prop=round(n_persons/n_total, 4)) %>%
+  dplyr::select(cluster, subtype_prop)
+
+
+
+heatmap_df_no_evidence<-results_tbl(paste('imp_heatmap_df_no_evidence', TAG, sep='')) %>% collect%>%
+  left_join(clust_props, by=c('Subphenotype'='cluster')) %>% 
+    mutate(Condition=case_when(
+    Condition=='Pasc'~'PASC Diagnosis',
+    Condition=='Covid19'~'COVID-19 Diagnosis',
+    Condition=='Abnormal Findings Without Diagnosis: Pasc-Related'~'Abnormal Findings Without Diagnosis: PASC-Related',
+    Condition=='Cardiovascular Signs And Sx'~'Cardiovascular Signs and Symptoms',
+    Condition=='Respiratory Signs And Sx'~'Respiratory Signs and Symptoms',
+    Condition=='Pots'~'POTS and POTS-like symptoms',
+    Condition=='Emotional Distress'~'Neuropsychiatric Conditions',
+    TRUE~Condition)) %>% 
+  mutate(label=paste0(round(Proportion*100, 1), '%<sup>', cld_letter, '</sup>', sep='')) %>%
+  #inner_join(supercluster_df_train, by=c('Subphenotype'='cluster')) %>%
+  #mutate(cluster=Subphenotype) %>% #clust_rename_train() %>% 
+  mutate(Subphenotype=paste(Subphenotype, ' (', round(subtype_prop*100, 1), '%)', sep='')) #%>% 
+  #mutate(supercluster=factor(supercluster, levels=c("Neuropsychiatric\n conditions", "Respiratory/cardiac\n symptoms", "Fatigue",
+                                                 #   "Gastrointestinal\n symptoms", "Headache",  
+                                                 #   "Musculoskeletal\n pain",
+                                                #    "Dermatologic\n symptoms",
+                                                 #   "Other")))
+
+g<-ggplot(heatmap_df_no_evidence, 
+          aes(Subphenotype, Condition))+#scale_x_discrete(position='top')+
+  geom_tile(aes(fill=Proportion))  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+scale_fill_gradient(low='white', high='blue')+
+    labs(y="Condition group")+geom_richtext(aes(label=label, text.color =ifelse(Proportion<0.50, "black", "white")), size=5, fill=NA, label.color=NA, parse=TRUE)+
+  #facet_grid(~supercluster, scales='free_x', switch='x', space='free_x')+ 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))+ theme(axis.text.x = element_text( size=12), axis.text.y = element_text(size=12))
+print(g)
+```
+
+
+## Figure S4: Comparison train vs test vs control
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+require(ggrepel)
+combined_df<-results_tbl(paste('df_aws_v3_combined', TAG, sep='')) %>% collect 
+
+combined_df %>% mutate(supercluster=case_when(
+  cohort=='no_evidence'~as.character(imputed_cluster),
+  supercluster=="Behavioral health"~"Neuropsychiatric\n conditions",
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+  TRUE~supercluster)) %>% 
+#  mutate(supercluster=case_when(
+#    supercluster=='Respiratory/cardiac\n symptoms'~'Respiratory/cardiac symptoms',
+#    supercluster=='Gastrointestinal\n symptoms'~'Gastrointestinal symptoms',
+#    supercluster=='Musculoskeletal\n pain'~'Musculoskeletal pain',
+#    TRUE~supercluster
+#  ))%>%
+  mutate(cohort=case_when(
+    cohort=='pasc_train'~'PASC cohort A',
+    cohort=='pasc_test'~'PASC cohort B',
+    cohort=='no_evidence'~'Matched control'
+  )) %>% 
+  mutate(cluster_cohort=paste(supercluster, cohort, sep="_")) %>%
+  group_by(supercluster, cohort) %>%
+  summarize(centroid_x=mean(x), centroid_y=mean(y)) %>%
+  ungroup %>% rename(Cohort=cohort, x=centroid_x, y=centroid_y) %>% 
+  ggplot(aes(x=x, y=y))+geom_point(aes(color=Cohort), size=3)+geom_text_repel(aes(label=supercluster), size=5, min.segment.length = 0.1)+
+  ylim(4,16)+xlim(-3,5)
+
+
+```
+
+## Table S2: Most common medications and procedures for cohort B by supercluster
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+top_codes_test<- results_tbl(paste('supercluster_top_codes_v3_test', TAG, sep='')) %>%
+    mutate(supercluster=case_when(supercluster=="Behavioral health"~"Neuropsychiatric\n conditions",
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+                                  TRUE~supercluster)) %>% 
+  inner_join(vocabulary_tbl('concept') %>% dplyr::select(concept_id, concept_code), by='concept_id') %>% 
+  collect %>%
+  dplyr::select(supercluster, concept_code, concept_id, concept_name, domain_id, prop) %>%   mutate(concept_name=case_when(
+    str_length(concept_name)>70~paste(substr(concept_name, 1, 70), '...', sep=''),
+    TRUE~concept_name
+  )) %>% 
+  mutate(name_code_prop=paste(concept_code, ': ', concept_name, ' (', round(prop*100, 1), '%)', sep='')) %>% 
+  filter(prop>=0.1) %>% group_by(supercluster,domain_id) %>% slice_max(prop, n=5) %>% summarize(code=paste0(name_code_prop, collapse =' <br> ')) %>%
+ pivot_wider(id_cols=c(supercluster), names_from=domain_id, values_from=code) 
+
+top_codes_test %>% 
+rename("Most common procedures"="Procedure", "Most common medications"="Drug") %>%
+  dplyr::select(-Condition, -Observation) %>%
+  t %>% 
+      kable("html", escape = F) %>%
+      kable_styling(bootstrap_options = c("striped", "hover")) %>%
+    column_spec(1, bold = T, border_right = T)
+```
+ 
+## Figure S5: Heatmap for cohort of only clustered patients (including noise cluster), cohort B
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=25, fig.height=10}
+
+clust_props<-cohort_test %>%
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(cluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(subtype_prop=round(n_persons/n_total, 4)) %>%
+  dplyr::select(cluster, subtype_prop)
+
+superclust_props<-cohort_test %>%
+  left_join(supercluster_df_test, by=c('cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(supercluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(superclust_prop=round(n_persons/n_total, 4)) %>%
+  dplyr::select(supercluster, superclust_prop)
+
+
+
+heatmap_df_test<-results_tbl(paste('heatmap_df_v3_test', TAG, sep='')) %>% collect%>%
+  left_join(clust_props, by=c('Subphenotype'='cluster')) %>% 
+    mutate(Condition=case_when(
+    Condition=='Pasc'~'PASC Diagnosis',
+    Condition=='Covid19'~'COVID-19 Diagnosis',
+    Condition=='Abnormal Findings Without Diagnosis: Pasc-Related'~'Abnormal Findings Without Diagnosis: PASC-Related',
+    Condition=='Cardiovascular Signs And Sx'~'Cardiovascular Signs and Symptoms',
+    Condition=='Respiratory Signs And Sx'~'Respiratory Signs and Symptoms',
+    Condition=='Pots'~'POTS and POTS-like symptoms',
+    Condition=='Emotional Distress'~'Neuropsychiatric Conditions',
+    TRUE~Condition)) %>% 
+  mutate(label=paste0(round(Proportion*100, 1), '%^', cld_letter, '', sep='')) %>%
+  left_join(supercluster_df_test, by=c('Subphenotype'='cluster')) %>%
+  mutate(supercluster=case_when(
+    supercluster=='Behavioral health'~'Neuropsychiatric\n conditions',
+    supercluster=='Cardiorespiratory\n symptoms'~'Respiratory/cardiac\n symptoms',
+    TRUE~supercluster
+  )) %>% 
+  left_join(superclust_props, by=c('supercluster')) %>% 
+  rename(cluster=Subphenotype) %>% clust_rename_test() %>% rename(Subphenotype=cluster) %>% 
+  mutate(Subphenotype=case_when(
+    is.na(Subphenotype)~'Unclustered',
+    TRUE~Subphenotype
+  )) %>%
+  mutate(supercluster=case_when(
+    is.na(supercluster)~'Unclustered',
+    TRUE~supercluster
+  ))%>% 
+  mutate(Subphenotype=paste(Subphenotype, ' (', round(subtype_prop*100, 1), '%)', sep='')) %>% 
+  mutate(supercluster=factor(supercluster, levels=c("Neuropsychiatric\n conditions","Respiratory/cardiac\n symptoms", 
+                                                    "Fatigue", 
+                                                    "Gastrointestinal\n symptoms",
+                                                    "Headache", 
+                                                    "Musculoskeletal\n pain", "Unclustered"))) %>%
+  mutate(supercluster=paste(supercluster, ' (', round(superclust_prop*100, 1), '%)', sep='')) 
+  
+
+g<-ggplot(heatmap_df_test, 
+          aes(Subphenotype, Condition))+#scale_x_discrete(position='top')+
+  geom_tile(aes(fill=Proportion))  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+scale_fill_gradient(low='white', high='blue')+
+    labs(y="Condition group")+geom_richtext(aes(label=label, text.color =ifelse(Proportion<0.50, "black", "white")), size=5, fill=NA, label.color=NA, parse=TRUE)+facet_grid(~supercluster, scales='free_x', switch='x', space='free_x')+ theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))+ theme(axis.text.x = element_text( size=12), axis.text.y = element_text(size=12))
+print(g)
+```
+
+## Figure S6: Healthcare utilization trajectories in cohort B, by cluster
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=20, fig.height=14}
+visit_trajectory_test<-results_tbl(paste('cohort_visit_trajectory_test', TAG, sep='')) %>% collect %>%
+  clust_rename_test() %>% filter(!is.na(cluster))
+provider_trajectory_test<-results_tbl(paste('cohort_provider_trajectory_test', TAG, sep='')) %>% collect %>%
+  clust_rename_test()%>% filter(!is.na(cluster))
+body_system_trajectory_test<-results_tbl(paste('cohort_body_system_trajectory_test', TAG, sep='')) %>% collect  %>%
+  clust_rename_test%>% filter(!is.na(cluster))
+
+n_clusts<-visit_trajectory_test %>% summarize(n=n_distinct(cluster)) %>% pull(n)
+
+ require(RColorBrewer)
+      site_palette <- colorRampPalette(brewer.pal(n_clusts, "Paired"))(n_clusts) # you can use Paired, Dark2, Set1, Set2, etc. whatever color palette you want
+      siteColors <- setNames(site_palette, visit_trajectory_test %>% 
+                               arrange(cluster)%>% distinct(cluster) %>% pull(cluster))
+#      
+#      
+      require(patchwork)
+      g1<-provider_trajectory_test %>% arrange(cluster) %>% filter(visit_month<12)%>%
+        ggplot(aes(x=visit_month, y=mean_n_providers, color=cluster))+geom_point()+geom_line(size=0.7)+
+        labs(x="Month after infection", y="Mean number of distinct providers")+ theme(legend.position="none") +
+        scale_fill_manual(values = siteColors)+scale_x_continuous(breaks=0:11)
+      g2<-visit_trajectory_test %>% arrange(cluster) %>% filter(visit_month<12) %>%
+        ggplot(aes(x=visit_month, y=mean_n_visits, color=cluster))+geom_point()+geom_line(size=0.7)+
+        labs(x="Month after infection", y="Mean number of visits")+ theme(legend.position="none")+
+        scale_fill_manual(values = siteColors)+scale_x_continuous(breaks=0:11)
+      g3<-body_system_trajectory_test %>% arrange(cluster) %>% filter(visit_month<12) %>% 
+        ggplot(aes(x=visit_month, y=mean_n_body_systems, color=cluster))+geom_point()+geom_line(size=0.7)+
+        labs(x="Month after infection", y="Mean number of body systems effected (PMCA)") +
+        scale_fill_manual(values = siteColors)+scale_x_continuous(breaks=0:11)#+ theme(legend.position="none")
+      
+#      png(paste0(output_dir,"/util_temporal.png", sep=""),width=20, height=10, units="in", res=1000)
+      print(g1+g2+g3)
+#      dev.off()
+#
+#        
+```
+
+## Figure S7 Pre-existing chronic conditions by cluster in Cohort B
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=10, fig.height=10}
+pmca_sum<-cohort_test %>% rename(Subphenotype=cluster) %>% filter(Subphenotype!=-1) %>% 
+  rename(cluster=Subphenotype) %>% clust_rename_test() %>% 
+  dplyr::select(person_id, cluster, starts_with("pmca")) %>% dplyr::select(-pmca_index) %>% 
+        group_by(cluster) %>%
+        mutate(n_total=n()) %>%
+        ungroup %>% 
+        pivot_longer(cols=starts_with('pmca'), names_to="pmca_cat") %>%
+        group_by(cluster, pmca_cat, value, n_total) %>%
+        summarize(n_persons=n_distinct(person_id)) %>%
+        collect %>% 
+        ungroup %>%
+        mutate(pmca_index=paste(pmca_cat, "_", value, sep="")) %>%
+        mutate(prop=n_persons/n_total) %>% 
+        filter(value!=0) %>%
+        group_by(pmca_cat, cluster) %>% 
+        summarize(prop=sum(prop)) %>% 
+        dplyr::select(cluster, pmca_cat, prop) %>% 
+        mutate(pmca_cat=str_to_title(substr(pmca_cat, start=6, stop=nchar(pmca_cat))))
+      
+      g<-ggplot(pmca_sum   %>% arrange(cluster), aes(cluster, pmca_cat, fill=prop))+
+        geom_tile()+
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+        labs(y="Chronic condition body system (by PMCA)", x="Cluster")
+
+  print(g)
+    
+```
+
+
+
+
+
+
+
+
+# Other materials for paper
+
+## Embedded vectors plot (no background), Cohort A
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=20, fig.height=14}
+x_vals<-cohort_train %>% pull(x)
+x_quants<-quantile(x_vals, probs=c(0.001, 0.999))
+x_min=x_quants[1]
+x_max=x_quants[2]
+y_vals<-cohort_train %>% pull(y)
+y_quants<-quantile(y_vals, probs=c(0.001, 0.999))
+y_min=y_quants[1]
+y_max=y_quants[2]
+
+
+h<-cohort_train %>% filter(cluster!=-1)%>% rename(Cluster=cluster) %>% filter(x>x_min, x<x_max, y>y_min, y<y_max) %>% ggplot(aes(x=x, y=y, color=Cluster))+geom_point() +  theme(panel.background = element_blank())#+
+     # theme(legend.text=element_text(size=12))#scale_fill_manual(values=subphenotypeColors)
+print(h)
+
+```
+
+## Embedded vectors plot (no background), Cohort B
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=20, fig.height=14}
+x_vals<-cohort_test %>% pull(x)
+x_quants<-quantile(x_vals, probs=c(0.001, 0.999))
+x_min=x_quants[1]
+x_max=x_quants[2]
+y_vals<-cohort_test %>% pull(y)
+y_quants<-quantile(y_vals, probs=c(0.001, 0.999))
+y_min=y_quants[1]
+y_max=y_quants[2]
+
+h<-cohort_test %>% filter(cluster!=-1)%>% rename(Cluster=cluster) %>% filter(x>x_min, x<x_max, y>y_min, y<y_max) %>% ggplot(aes(x=x, y=y, color=Cluster))+geom_point() +  theme(panel.background = element_blank())#+
+     # theme(legend.text=element_text(size=12))#scale_fill_manual(values=subphenotypeColors)
+print(h)
+
+```
+
+## Numbers for paper
+
+```{r name}
+print('Number of persons in person table:')
+cdm_tbl('person') %>% summarize(n_distinct(person_id))
+
+print('Number of sentences:')
+results_tbl('codes_by_site_aws') %>% summarize(n())
+print('Number of persons:')
+results_tbl('codes_by_site_aws') %>% summarize(n_distinct(person_id))
+```

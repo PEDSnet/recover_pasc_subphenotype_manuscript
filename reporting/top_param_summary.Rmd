@@ -1,0 +1,646 @@
+---
+title: "PASC Subphenotyping: Top parameter summary (3/22/2024)"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_collapsed: yes
+    toc_float: yes
+---
+
+
+```{r include=FALSE}
+# Default taken from R notebook behavior: when knitting, wd will always be location of notebook
+base_dir <- '..'
+Sys.setenv(PEDSNET_SKIP_REQUEST_EXECUTION=1)
+try(source('../site/run.R')) # May not be able to make db connection
+
+# Set to "local" to read data from ../results, or another value to read from db
+data_source <- if_else(config('execution_mode') == 'distribution', 'local', 'not_local')
+
+require(tibble)
+require(knitr)
+require(kableExtra)
+require(readr)
+require(RColorBrewer)
+require(tableone)
+
+get_results <- function(tbl_name) {
+  if (data_source == 'local') {
+    rslt <- read_csv(paste0('../results/', tbl_name, '.csv'))
+  }
+  else {
+    rslt <- results_tbl(tbl_name) %>% collect()
+  }
+  rslt
+}
+
+
+prettify_kable <- function(data) {
+  data %>% kable(digits = 4, format.args = list(big.mark = ',')) %>%
+    kable_styling(bootstrap_options = c("striped", "hover")) %>%
+    column_spec(1, bold = T, border_right = T)
+}
+
+
+TAG='_320'
+
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+cohort_opt1<-results_tbl(paste('cp_opt1', TAG, sep='')) %>% 
+#  inner_join(cdm_tbl('person') %>% 
+#               dplyr::select(person_id, site), by='person_id') %>%
+  collect
+
+cohort_opt2<-results_tbl(paste('cp_opt2', TAG, sep='')) %>% 
+#  inner_join(cdm_tbl('person') %>% 
+#               dplyr::select(person_id, site), by='person_id') %>%
+  collect
+
+cohort_opt3<-results_tbl(paste('cp_opt3', TAG, sep='')) %>% 
+#  inner_join(cdm_tbl('person') %>% 
+#               dplyr::select(person_id, site), by='person_id') %>%
+  collect
+
+cohort_opt4<-results_tbl(paste('cp_opt4', TAG, sep='')) %>% 
+#  inner_join(cdm_tbl('person') %>% 
+#               dplyr::select(person_id, site), by='person_id') %>%
+  collect
+
+
+
+#subphenotype_palette <- colorRampPalette(brewer.pal(8, "Paired"))(nrow(cohort_a %>% distinct(supercluster))) # number of colors that you need. Use this syntax to specify so you can go above and beyond the set number of palette colors
+
+#subphenotypeColors <- setNames(subphenotype_palette, cohort_a %>% distinct(supercluster) %>% pull(supercluster))
+
+#siteColors <- siteColors[sample(1:length(siteColors))] # Don't remember why I had to do this, might not be necessary
+```
+
+# Cluster plots
+
+In the plots below, unclustered patients are excluded. They will be addressed in a separate sensitivity analysis.
+
+## Parameter option 1
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+x_vals<-cohort_opt1 %>% pull(x)
+x_quants<-quantile(x_vals, probs=c(0.02, 0.98))
+x_min=x_quants[1]
+x_max=x_quants[2]
+y_vals<-cohort_opt1 %>% pull(y)
+y_quants<-quantile(y_vals, probs=c(0.01, 0.99))
+y_min=y_quants[1]
+y_max=y_quants[2]
+    
+g<-cohort_opt1 %>% filter(cluster!=-1) %>% rename(Subphenotype=cluster) %>% filter(x>x_min, x<x_max, y>y_min, y<y_max) %>% ggplot(aes(x=x, y=y, color=Subphenotype))+geom_point() + 
+      theme(legend.text=element_text(size=12))
+print(g)
+    
+#    png(paste0(output_dir,"/clust_plot_labeled.png", sep=""),width=15, height=10, units="in", res=1000)
+#    print(g)
+#    dev.off()
+```
+
+
+## Parameter option 2
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+x_vals<-cohort_opt2 %>% pull(x)
+x_quants<-quantile(x_vals, probs=c(0.02, 0.98))
+x_min=x_quants[1]
+x_max=x_quants[2]
+y_vals<-cohort_opt2 %>% pull(y)
+y_quants<-quantile(y_vals, probs=c(0.01, 0.99))
+y_min=y_quants[1]
+y_max=y_quants[2]
+    
+g<-cohort_opt2 %>% filter(cluster!=-1) %>% rename(Subphenotype=cluster) %>% filter(x>x_min, x<x_max, y>y_min, y<y_max) %>% ggplot(aes(x=x, y=y, color=Subphenotype))+geom_point() + 
+      theme(legend.text=element_text(size=12))
+print(g)
+    
+#    png(paste0(output_dir,"/clust_plot_labeled.png", sep=""),width=15, height=10, units="in", res=1000)
+#    print(g)
+#    dev.off()
+```
+
+
+## Parameter option 3
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+x_vals<-cohort_opt3 %>% pull(x)
+x_quants<-quantile(x_vals, probs=c(0.02, 0.98))
+x_min=x_quants[1]
+x_max=x_quants[2]
+y_vals<-cohort_opt3 %>% pull(y)
+y_quants<-quantile(y_vals, probs=c(0.01, 0.99))
+y_min=y_quants[1]
+y_max=y_quants[2]
+    
+g<-cohort_opt3 %>% filter(cluster!=-1) %>% rename(Subphenotype=cluster) %>% filter(x>x_min, x<x_max, y>y_min, y<y_max) %>% ggplot(aes(x=x, y=y, color=Subphenotype))+geom_point() + 
+      theme(legend.text=element_text(size=12))
+print(g)
+    
+#    png(paste0(output_dir,"/clust_plot_labeled.png", sep=""),width=15, height=10, units="in", res=1000)
+#    print(g)
+#    dev.off()
+```
+
+
+## Parameter option 4
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+x_vals<-cohort_opt4 %>% pull(x)
+x_quants<-quantile(x_vals, probs=c(0.02, 0.98))
+x_min=x_quants[1]
+x_max=x_quants[2]
+y_vals<-cohort_opt4 %>% pull(y)
+y_quants<-quantile(y_vals, probs=c(0.01, 0.99))
+y_min=y_quants[1]
+y_max=y_quants[2]
+    
+g<-cohort_opt4 %>% filter(cluster!=-1) %>% rename(Subphenotype=cluster) %>% filter(x>x_min, x<x_max, y>y_min, y<y_max) %>% ggplot(aes(x=x, y=y, color=Subphenotype))+geom_point() + 
+      theme(legend.text=element_text(size=12))
+print(g)
+    
+#    png(paste0(output_dir,"/clust_plot_labeled.png", sep=""),width=15, height=10, units="in", res=1000)
+#    print(g)
+#    dev.off()
+```
+
+
+
+# Cluster proportions
+
+## Parameter option 1
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+cohort_opt1 %>%
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(cluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(prop=round(n_persons/n_total, 2)) %>%
+  dplyr::select(cluster, prop) %>% 
+  prettify_kable()
+
+```
+
+
+## Parameter option 2
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+cohort_opt2 %>%
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(cluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(prop=round(n_persons/n_total, 2)) %>%
+  dplyr::select(cluster, prop) %>% 
+  prettify_kable()
+
+```
+
+
+## Parameter option 3
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+cohort_opt3 %>%
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(cluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(prop=round(n_persons/n_total, 2)) %>%
+  dplyr::select(cluster, prop) %>% 
+  prettify_kable()
+
+```
+
+
+## Parameter option 4
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+cohort_opt4 %>%
+  mutate(n_total=n_distinct(person_id)) %>% 
+  group_by(cluster, n_total) %>%
+  summarize(n_persons=n_distinct(person_id)) %>%
+  mutate(prop=round(n_persons/n_total, 2)) %>%
+  dplyr::select(cluster, prop) %>% 
+  prettify_kable()
+
+```
+
+# Cluster age distributions
+
+## Parameter option 1
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+g<-cohort_opt1 %>% filter(cluster!=-1) %>% 
+      ggplot(aes(x=entry_age))+geom_histogram()+facet_wrap(~cluster)+
+      labs(y="Number of patients", x="Age")
+print(g)
+    
+```
+
+## Parameter option 2
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+g<-cohort_opt2 %>% filter(cluster!=-1) %>% 
+      ggplot(aes(x=entry_age))+geom_histogram()+facet_wrap(~cluster)+
+      labs(y="Number of patients", x="Age")
+print(g)
+    
+```
+## Parameter option 3
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+g<-cohort_opt3 %>% filter(cluster!=-1) %>% 
+      ggplot(aes(x=entry_age))+geom_histogram()+facet_wrap(~cluster)+
+      labs(y="Number of patients", x="Age")
+print(g)
+    
+```
+
+
+
+
+## Parameter option 4
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+g<-cohort_opt4 %>% filter(cluster!=-1) %>% 
+      ggplot(aes(x=entry_age))+geom_histogram()+facet_wrap(~cluster)+
+      labs(y="Number of patients", x="Age")
+print(g)
+    
+```
+
+
+
+
+
+
+
+# Presence/complexity of chronic conditions
+
+
+## Parameter option 1
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+pmca_sum<-cohort_opt1 %>% filter(cluster!=-1) %>% rename(Subphenotype=cluster) %>% 
+  dplyr::select(person_id, Subphenotype, starts_with("pmca")) %>% dplyr::select(-pmca_index) %>% 
+        group_by(Subphenotype) %>%
+        mutate(n_total=n()) %>%
+        ungroup %>% 
+        pivot_longer(cols=starts_with('pmca'), names_to="pmca_cat") %>%
+        group_by(Subphenotype, pmca_cat, value, n_total) %>%
+        summarize(n_persons=n_distinct(person_id)) %>%
+        collect %>% 
+        ungroup %>%
+        mutate(pmca_index=paste(pmca_cat, "_", value, sep="")) %>%
+        mutate(prop=n_persons/n_total) %>% 
+        filter(value!=0) %>%
+        group_by(pmca_cat, Subphenotype) %>% 
+        summarize(prop=sum(prop)) %>% 
+        dplyr::select(Subphenotype, pmca_cat, prop) %>% 
+        mutate(pmca_cat=str_to_title(substr(pmca_cat, start=6, stop=nchar(pmca_cat))))
+      
+      g<-ggplot(pmca_sum   %>% arrange(Subphenotype), aes(Subphenotype, pmca_cat, fill=prop))+
+        geom_tile()+
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+        labs(y="Chronic condition body system (by PMCA)", x="Subphenotype")
+
+  print(g)
+    
+```
+
+## Parameter option 2
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+pmca_sum<-cohort_opt2 %>% filter(cluster!=-1) %>% rename(Subphenotype=cluster) %>% 
+  dplyr::select(person_id, Subphenotype, starts_with("pmca")) %>% dplyr::select(-pmca_index) %>% 
+        group_by(Subphenotype) %>%
+        mutate(n_total=n()) %>%
+        ungroup %>% 
+        pivot_longer(cols=starts_with('pmca'), names_to="pmca_cat") %>%
+        group_by(Subphenotype, pmca_cat, value, n_total) %>%
+        summarize(n_persons=n_distinct(person_id)) %>%
+        collect %>% 
+        ungroup %>%
+        mutate(pmca_index=paste(pmca_cat, "_", value, sep="")) %>%
+        mutate(prop=n_persons/n_total) %>% 
+        filter(value!=0) %>%
+        group_by(pmca_cat, Subphenotype) %>% 
+        summarize(prop=sum(prop)) %>% 
+        dplyr::select(Subphenotype, pmca_cat, prop) %>% 
+        mutate(pmca_cat=str_to_title(substr(pmca_cat, start=6, stop=nchar(pmca_cat))))
+      
+      g<-ggplot(pmca_sum   %>% arrange(Subphenotype), aes(Subphenotype, pmca_cat, fill=prop))+
+        geom_tile()+
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+        labs(y="Chronic condition body system (by PMCA)", x="Subphenotype")
+
+  print(g)
+    
+```
+
+## Parameter option 3
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+pmca_sum<-cohort_opt3 %>% filter(cluster!=-1)%>% rename(Subphenotype=cluster) %>% 
+  dplyr::select(person_id, Subphenotype, starts_with("pmca")) %>% dplyr::select(-pmca_index) %>% 
+        group_by(Subphenotype) %>%
+        mutate(n_total=n()) %>%
+        ungroup %>% 
+        pivot_longer(cols=starts_with('pmca'), names_to="pmca_cat") %>%
+        group_by(Subphenotype, pmca_cat, value, n_total) %>%
+        summarize(n_persons=n_distinct(person_id)) %>%
+        collect %>% 
+        ungroup %>%
+        mutate(pmca_index=paste(pmca_cat, "_", value, sep="")) %>%
+        mutate(prop=n_persons/n_total) %>% 
+        filter(value!=0) %>%
+        group_by(pmca_cat, Subphenotype) %>% 
+        summarize(prop=sum(prop)) %>% 
+        dplyr::select(Subphenotype, pmca_cat, prop) %>% 
+        mutate(pmca_cat=str_to_title(substr(pmca_cat, start=6, stop=nchar(pmca_cat))))
+      
+      g<-ggplot(pmca_sum   %>% arrange(Subphenotype), aes(Subphenotype, pmca_cat, fill=prop))+
+        geom_tile()+
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+        labs(y="Chronic condition body system (by PMCA)", x="Subphenotype")
+
+  print(g)
+    
+```
+
+## Parameter option 4
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+pmca_sum<-cohort_opt4 %>% filter(cluster!=-1)%>% rename(Subphenotype=cluster) %>% 
+  dplyr::select(person_id, Subphenotype, starts_with("pmca")) %>% dplyr::select(-pmca_index) %>% 
+        group_by(Subphenotype) %>%
+        mutate(n_total=n()) %>%
+        ungroup %>% 
+        pivot_longer(cols=starts_with('pmca'), names_to="pmca_cat") %>%
+        group_by(Subphenotype, pmca_cat, value, n_total) %>%
+        summarize(n_persons=n_distinct(person_id)) %>%
+        collect %>% 
+        ungroup %>%
+        mutate(pmca_index=paste(pmca_cat, "_", value, sep="")) %>%
+        mutate(prop=n_persons/n_total) %>% 
+        filter(value!=0) %>%
+        group_by(pmca_cat, Subphenotype) %>% 
+        summarize(prop=sum(prop)) %>% 
+        dplyr::select(Subphenotype, pmca_cat, prop) %>% 
+        mutate(pmca_cat=str_to_title(substr(pmca_cat, start=6, stop=nchar(pmca_cat))))
+      
+      g<-ggplot(pmca_sum   %>% arrange(Subphenotype), aes(Subphenotype, pmca_cat, fill=prop))+
+        geom_tile()+
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+        labs(y="Chronic condition body system (by PMCA)", x="Subphenotype")
+
+  print(g)
+    
+```
+
+
+
+
+# Cluster heatmaps
+
+## Parameter option 1
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=12, fig.height=10}
+heatmap_df_opt1<-results_tbl(paste('heatmap_df_opt1', TAG, sep='')) %>% filter(Subphenotype!="-1") %>% collect
+
+g<-ggplot(heatmap_df_opt1, 
+          aes(Subphenotype, Condition))+
+  geom_tile(aes(fill=Proportion))  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+    labs(y="Condition cluster")+geom_text(aes(label=cld_letter), color='white', size=5)
+print(g)
+```
+## Parameter option 2
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=12, fig.height=10}
+heatmap_df_opt2<-results_tbl(paste('heatmap_df_opt2', TAG, sep=''))%>% filter(Subphenotype!="-1") %>% collect
+
+g<-ggplot(heatmap_df_opt2, 
+          aes(Subphenotype, Condition))+
+  geom_tile(aes(fill=Proportion))  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+    labs(y="Condition cluster")+geom_text(aes(label=cld_letter), color='white', size=5)
+print(g)
+```
+
+## Parameter option 3
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=14, fig.height=10}
+heatmap_df_opt3<-results_tbl(paste('heatmap_df_opt3', TAG, sep=''))%>% filter(Subphenotype!="-1") %>% collect
+
+g<-ggplot(heatmap_df_opt3, 
+          aes(Subphenotype, Condition))+
+  geom_tile(aes(fill=Proportion))  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+    labs(y="Condition cluster")+geom_text(aes(label=cld_letter), color='white', size=5)
+print(g)
+```
+
+
+## Parameter option 4
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=14, fig.height=10}
+heatmap_df_opt4<-results_tbl(paste('heatmap_df_opt4', TAG, sep=''))%>% filter(Subphenotype!="-1") %>% collect
+
+g<-ggplot(heatmap_df_opt4, 
+          aes(Subphenotype, Condition))+
+  geom_tile(aes(fill=Proportion))  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+    labs(y="Condition cluster")+geom_text(aes(label=cld_letter), color='white', size=5)
+print(g)
+```
+
+
+
+
+# Table 1
+
+## Parameter option 1
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+var_label_list <- list(site = "Institution",
+                       sex_cat = "Sex",
+                       eth_cat = "Race/ethnicity",
+                       cohort_entry_period="Cohort entry period",
+                       obs_age_cat = "Age at cohort entrance",
+                       pmca_index="PMCA Index"
+                       )
+labelled::var_label(cohort_opt1) <- var_label_list
+
+vars <- c("obs_age_cat", "sex_cat", "eth_cat", "cohort_entry_period", "site", 'pmca_index')
+tableone_input <- CreateTableOne(vars = vars, strata = "cluster", data = cohort_opt1 %>% filter(cluster!=-1), addOverall=TRUE, test = FALSE, smd=TRUE)
+
+
+
+
+print(tableone_input, smd = FALSE, printToggle = FALSE, varLabels=TRUE, showAllLevels = TRUE, formatOptions = list(big.mark = ",", scientific=FALSE)) %>%
+  prettify_kable()
+
+```
+
+
+## Parameter option 2
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+var_label_list <- list(site = "Institution",
+                       sex_cat = "Sex",
+                       eth_cat = "Race/ethnicity",
+                       cohort_entry_period="Cohort entry period",
+                       obs_age_cat = "Age at cohort entrance",
+                       pmca_index="PMCA Index"
+                       )
+labelled::var_label(cohort_opt2) <- var_label_list
+
+vars <- c("obs_age_cat", "sex_cat", "eth_cat", "cohort_entry_period", "site", 'pmca_index')
+tableone_input <- CreateTableOne(vars = vars, strata = "cluster", data = cohort_opt2 %>% filter(cluster!=-1), addOverall=TRUE, test = FALSE, smd=TRUE)
+
+
+
+
+print(tableone_input, smd = FALSE, printToggle = FALSE, varLabels=TRUE, showAllLevels = TRUE, formatOptions = list(big.mark = ",", scientific=FALSE)) %>%
+  prettify_kable()
+
+```
+
+## Parameter option 3
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+var_label_list <- list(site = "Institution",
+                       sex_cat = "Sex",
+                       eth_cat = "Race/ethnicity",
+                       cohort_entry_period="Cohort entry period",
+                       obs_age_cat = "Age at cohort entrance",
+                       pmca_index="PMCA Index"
+                       )
+labelled::var_label(cohort_opt3) <- var_label_list
+
+vars <- c("obs_age_cat", "sex_cat", "eth_cat", "cohort_entry_period", "site", 'pmca_index')
+tableone_input <- CreateTableOne(vars = vars, strata = "cluster", data = cohort_opt3%>% filter(cluster!=-1), addOverall=TRUE, test = FALSE, smd=TRUE)
+
+
+
+
+print(tableone_input, smd = FALSE, printtoggle = FALSE, varlabels=TRUE, showalllevels = TRUE, formatoptions = list(big.mark = ",", scientific=FALSE)) %>%
+  prettify_kable()
+
+```
+
+
+## Parameter option 4
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.width=15, fig.height=10}
+var_label_list <- list(site = "Institution",
+                       sex_cat = "Sex",
+                       eth_cat = "Race/ethnicity",
+                       cohort_entry_period="Cohort entry period",
+                       obs_age_cat = "Age at cohort entrance",
+                       pmca_index="PMCA Index"
+                       )
+labelled::var_label(cohort_opt4) <- var_label_list
+
+vars <- c("obs_age_cat", "sex_cat", "eth_cat", "cohort_entry_period", "site", 'pmca_index')
+tableone_input <- CreateTableOne(vars = vars, strata = "cluster", data = cohort_opt4%>% filter(cluster!=-1), addOverall=TRUE, test = FALSE, smd=TRUE)
+
+
+
+
+print(tableone_input, smd = FALSE, printtoggle = FALSE, varlabels=TRUE, showalllevels = TRUE, formatoptions = list(big.mark = ",", scientific=FALSE)) %>%
+  prettify_kable()
+
+```
+
+
+
+
+# top codes by domain
+
+## parameter option 1
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+ results_tbl(paste('top_codes_opt1', TAG, sep='')) %>% filter(cluster!='-1') %>% 
+  inner_join(vocabulary_tbl('concept') %>% dplyr::select(concept_id, concept_code), by='concept_id') %>% 
+  collect %>%
+  dplyr::select( cluster, concept_code, concept_id, concept_name, domain_id, prop) %>%   mutate(concept_name=case_when(
+    str_length(concept_name)>70~paste(substr(concept_name, 1, 70), '...', sep=''),
+    TRUE~concept_name
+  )) %>% 
+  mutate(name_code_prop=paste(concept_code, ': ', concept_name, ' (', prop*100, '%)', sep='')) %>% 
+  filter(prop>=0.2) %>% group_by( cluster,domain_id) %>% slice_max(prop, n=5) %>% summarize(code=paste0(name_code_prop, collapse =' <br> ')) %>%
+  pivot_wider(id_cols=c( cluster), names_from=domain_id, values_from=code) %>% 
+      kable("html", escape = F) %>%
+      kable_styling(bootstrap_options = c("striped", "hover")) %>%
+    column_spec(1, bold = T, border_right = T)
+
+
+
+
+```
+
+
+## parameter option 2
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+ results_tbl(paste('top_codes_opt2', TAG, sep='')) %>% filter(cluster!='-1') %>% 
+  inner_join(vocabulary_tbl('concept') %>% dplyr::select(concept_id, concept_code), by='concept_id') %>% 
+  collect %>%
+  dplyr::select( cluster, concept_code, concept_id, concept_name, domain_id, prop) %>%   mutate(concept_name=case_when(
+    str_length(concept_name)>70~paste(substr(concept_name, 1, 70), '...', sep=''),
+    TRUE~concept_name
+  )) %>% 
+  mutate(name_code_prop=paste(concept_code, ': ', concept_name, ' (', prop*100, '%)', sep='')) %>% 
+  filter(prop>=0.2) %>% group_by( cluster,domain_id) %>% slice_max(prop, n=5) %>% summarize(code=paste0(name_code_prop, collapse =' <br> ')) %>%
+  pivot_wider(id_cols=c( cluster), names_from=domain_id, values_from=code) %>% 
+      kable("html", escape = F) %>%
+      kable_styling(bootstrap_options = c("striped", "hover")) %>%
+    column_spec(1, bold = T, border_right = T)
+
+
+```
+
+
+## parameter option 3
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+ results_tbl(paste('top_codes_opt3', TAG, sep='')) %>% filter(cluster!='-1') %>% 
+  inner_join(vocabulary_tbl('concept') %>% dplyr::select(concept_id, concept_code), by='concept_id') %>% 
+  collect %>%
+  dplyr::select( cluster, concept_code, concept_id, concept_name, domain_id, prop) %>%   mutate(concept_name=case_when(
+    str_length(concept_name)>70~paste(substr(concept_name, 1, 70), '...', sep=''),
+    TRUE~concept_name
+  )) %>% 
+  mutate(name_code_prop=paste(concept_code, ': ', concept_name, ' (', prop*100, '%)', sep='')) %>% 
+  filter(prop>=0.2) %>% group_by( cluster,domain_id) %>% slice_max(prop, n=5) %>% summarize(code=paste0(name_code_prop, collapse =' <br> ')) %>%
+  pivot_wider(id_cols=c( cluster), names_from=domain_id, values_from=code) %>% 
+      kable("html", escape = F) %>%
+      kable_styling(bootstrap_options = c("striped", "hover")) %>%
+    column_spec(1, bold = T, border_right = T)
+
+```
+
+
+## parameter option 4
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+ results_tbl(paste('top_codes_opt4', TAG, sep='')) %>% filter(cluster!='-1') %>% 
+  inner_join(vocabulary_tbl('concept') %>% dplyr::select(concept_id, concept_code), by='concept_id') %>% 
+  collect %>%
+  dplyr::select( cluster, concept_code, concept_id, concept_name, domain_id, prop) %>%   mutate(concept_name=case_when(
+    str_length(concept_name)>70~paste(substr(concept_name, 1, 70), '...', sep=''),
+    TRUE~concept_name
+  )) %>% 
+  mutate(name_code_prop=paste(concept_code, ': ', concept_name, ' (', prop*100, '%)', sep='')) %>% 
+  filter(prop>=0.2) %>% group_by( cluster,domain_id) %>% slice_max(prop, n=5) %>% summarize(code=paste0(name_code_prop, collapse =' <br> ')) %>%
+  pivot_wider(id_cols=c( cluster), names_from=domain_id, values_from=code) %>% 
+      kable("html", escape = F) %>%
+      kable_styling(bootstrap_options = c("striped", "hover")) %>%
+    column_spec(1, bold = T, border_right = T)
+
+```
+
+
+
